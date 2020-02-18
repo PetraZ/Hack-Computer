@@ -1,0 +1,268 @@
+function AsteroidField.new 2
+push constant 6
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+pop this 0
+push constant 9000
+push constant 3000
+call PseudoFloat.new 2
+pop this 1
+push this 0
+call Array.new 1
+pop this 3
+push constant 0
+pop this 4
+push argument 1
+pop this 5
+push constant 0
+pop local 0
+push constant 2
+call Constants.SCREEN_WIDTH 0
+call Math.multiply 2
+pop this 2
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push pointer 0
+call AsteroidField.getRandomAsteroidRadius 1
+pop local 1
+push this 2
+push pointer 0
+call AsteroidField.getRandomAsteroidDistance 1
+add
+pop this 2
+push local 0
+push this 3
+add
+push this 2
+push pointer 0
+push local 1
+call AsteroidField.getRandomAsteroidAltitude 2
+push local 1
+call Asteroid.new 3
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push pointer 0
+return
+function AsteroidField.getRandomAsteroidRadius 0
+push argument 0
+pop pointer 0
+push this 5
+call Constants.MIN_ASTEROID_SIZE 0
+call Constants.MAX_ASTEROID_SIZE 0
+call RNG.randomFromInterval 3
+return
+function AsteroidField.getRandomAsteroidDistance 0
+push argument 0
+pop pointer 0
+push this 5
+call Constants.MIN_ASTEROID_DISTANCE 0
+call Constants.MAX_ASTEROID_DISTANCE 0
+call RNG.randomFromInterval 3
+return
+function AsteroidField.getRandomAsteroidAltitude 0
+push argument 0
+pop pointer 0
+push this 5
+push argument 1
+call Constants.SCREEN_HEIGHT 0
+push argument 1
+sub
+call RNG.randomFromInterval 3
+return
+function AsteroidField.getSize 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function AsteroidField.getAsteroidsPassed 0
+push argument 0
+pop pointer 0
+push this 4
+return
+function AsteroidField.increaseSpeed 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 1
+call PseudoFloat.add 2
+pop temp 0
+push constant 0
+return
+function AsteroidField.update 4
+push argument 0
+pop pointer 0
+push this 2
+push this 1
+call PseudoFloat.getValue 1
+sub
+pop this 2
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 3
+add
+pop pointer 1
+push that 0
+pop local 2
+push local 2
+push this 1
+call PseudoFloat.getValue 1
+neg
+call Asteroid.move 2
+pop temp 0
+push local 2
+call Asteroid.outOfLeftBounds 1
+pop local 1
+push local 1
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+call Asteroid.erase 1
+pop temp 0
+push pointer 0
+call AsteroidField.getRandomAsteroidRadius 1
+pop local 3
+push this 2
+push pointer 0
+call AsteroidField.getRandomAsteroidDistance 1
+add
+pop this 2
+push local 2
+push local 3
+call Asteroid.setRadius 2
+pop temp 0
+push local 2
+push this 2
+call Asteroid.setX 2
+pop temp 0
+push local 2
+push pointer 0
+push local 3
+call AsteroidField.getRandomAsteroidAltitude 2
+call Asteroid.setY 2
+pop temp 0
+push this 4
+push constant 1
+add
+pop this 4
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function AsteroidField.draw 3
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 3
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Asteroid.outOfRightBounds 1
+pop local 2
+push local 2
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 1
+call Asteroid.draw 1
+pop temp 0
+label IF_FALSE0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function AsteroidField.checkForCollision 3
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 0
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 3
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Asteroid.getBoundingRect 1
+pop local 2
+push argument 1
+push local 2
+call Rect.intersects 2
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push local 2
+call Rect.dispose 1
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push local 2
+call Rect.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function AsteroidField.dispose 2
+push argument 0
+pop pointer 0
+push this 3
+call Array.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

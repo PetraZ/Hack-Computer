@@ -1,0 +1,183 @@
+/**
+ * The Game. Controls the game, handling rules, advancing generations.
+ */
+class Game {
+
+  /** the current world */
+  field World current;
+  /** the height and width of the world. */
+  field int height, width;
+  /** array of booleans to hold the neighbouring population values for births and surviving */
+  field Array birthPop, survivePop;
+  
+  /** 
+   * Create a new game
+   */
+  constructor Game new() {
+    /** the controller handling user control of the game */
+    var Controller controller;
+    
+    /* the height and width of the game */
+    let height = 48;
+    let width = 64;
+    
+    do establishRules();
+    
+    let current = World.new(width, height);
+    do current.draw();
+    
+    let controller = Controller.new(this);
+    
+    return this;
+  }
+  
+  /**
+   * Advance the generation of the game 
+   */
+  method void advanceGeneration() {
+    var int x, y, neighbours;
+    var boolean cell;
+    var World next;
+    
+    let next = World.new(width, height);
+    
+    while (x < width) {
+      while (y < height) {
+        let neighbours = countNeighbours(x, y);
+        let cell = (current.getCell(x, y) & survivePop[neighbours]) | birthPop[neighbours];
+        do next.setCell(x, y, cell);
+        let y = y + 1;
+      }
+      let y = 0;
+      let x = x + 1;
+    }
+    do current.dispose();
+    let current = next;
+    do current.draw();
+    return;
+  }
+  
+  /**
+   * Count the number of neighbours a given cell has
+   */
+  method int countNeighbours(int x, int y) {
+    var int neighbours;
+    let neighbours = 0;
+    
+    if (x > 0) {
+      if (y > 0) {
+        if (current.getCell(x-1, y-1)) {
+          let neighbours = neighbours + 1;
+        }
+      }
+      if (current.getCell(x-1, y)) { 
+        let neighbours = neighbours + 1;
+      }
+      if (y < (height - 1)) {
+        if (current.getCell(x-1, y+1)) {
+          let neighbours = neighbours + 1;
+        }
+      }
+    }
+    if (x < (width - 1)) {
+      if (y > 0) {
+        if (current.getCell(x+1, y-1)) {
+          let neighbours = neighbours + 1;
+        }
+      }
+      if (current.getCell(x+1, y)) { 
+        let neighbours = neighbours + 1;
+      }
+      if (y < (height - 1)) {
+        if (current.getCell(x+1, y+1)) {
+          let neighbours = neighbours + 1;
+        }
+      }      
+    }
+    if (y > 0) {
+      if (current.getCell(x, y-1)) {
+        let neighbours = neighbours + 1;
+      }
+    }
+    if (y < (height - 1)) {
+      if (current.getCell(x, (y+1))) {
+        let neighbours = neighbours + 1;
+      }
+    }
+    return neighbours;
+  }
+  
+  /**
+   * Advance one place through the catalogue
+   */
+  method void advanceCatalogue() {
+    do Catalogue.advanceCatalogue(current);
+    
+    do current.draw();
+    
+    return;
+  }
+  
+  method int getWidth() {
+    return width;
+  }
+  
+  method int getHeight() {
+    return height;
+  }
+  
+  method void setShowCursor(boolean value) {
+    do current.setShowCursor(value);
+    return;
+  }
+  
+  method void setCursor(int x, int y) {
+    do current.setCursor(x, y);
+    return;
+  }
+  
+  method void draw() {
+    do current.draw();
+    return;
+  }
+  
+  method void flipCell(int x, int y) { 
+    do current.flipCell(x, y);
+    return;
+  }
+  
+  method void clear() {
+    do current.clear();
+    do current.draw();
+    return;
+  }
+  
+  /** set up the rules of the game */
+  method void establishRules() {
+    let birthPop = Array.new(9);
+    let birthPop[0] = false;
+    let birthPop[1] = false;
+    let birthPop[2] = false;
+    let birthPop[3] = true;
+    let birthPop[4] = false;
+    let birthPop[5] = false;
+    let birthPop[6] = false;
+    let birthPop[7] = false;
+    let birthPop[8] = false;
+    
+    let survivePop = Array.new(9);  
+    let survivePop[0] = false;
+    let survivePop[1] = false;
+    let survivePop[2] = true;
+    let survivePop[3] = true;
+    let survivePop[4] = false;
+    let survivePop[5] = false;
+    let survivePop[6] = false;
+    let survivePop[7] = false;
+    let survivePop[8] = false;    
+    
+    return;
+  }
+
+}
+    

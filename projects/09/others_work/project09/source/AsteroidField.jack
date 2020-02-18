@@ -1,0 +1,160 @@
+/**
+ * Multiple asteroids, that move from right to left over the screen.
+ */
+class AsteroidField {
+  field int size;
+  field PseudoFloat speed;
+  field int mostRightAsteroidPosition;
+  field Array asteroids;
+  field int asteroidsPassed;
+  field RNG rng;
+
+  /**
+   * Size determines how many asteroids will be 'alive' simultaneously.
+   */
+  constructor AsteroidField new(int pSize, RNG pRng) {
+    var int idx;
+    var int radius;
+
+    /* Set fields. */
+    let size = pSize;
+    let speed = PseudoFloat.new(9000, 3000);
+    let asteroids = Array.new(size);
+    let asteroidsPassed = 0;
+    let rng = pRng;
+
+    /* Create asteroids. */
+    let idx = 0;
+    let mostRightAsteroidPosition = 2 * Constants.SCREEN_WIDTH();
+    while(idx < size) {
+      let radius = getRandomAsteroidRadius();
+      let mostRightAsteroidPosition = mostRightAsteroidPosition + getRandomAsteroidDistance();
+      let asteroids[idx] = Asteroid.new(mostRightAsteroidPosition, getRandomAsteroidAltitude(radius), radius);
+      let idx = idx + 1;
+    }
+    return this;
+  }
+
+  /**
+   * Returns a random radius from within the interval that's defined in Constants.jack.
+   */
+  method int getRandomAsteroidRadius() {
+    return rng.randomFromInterval(Constants.MIN_ASTEROID_SIZE(), Constants.MAX_ASTEROID_SIZE());
+  }
+
+  /**
+   * Returns a random new position for an asteroid outside of the right screen edge.
+   */
+  method int getRandomAsteroidDistance() {
+    return rng.randomFromInterval(Constants.MIN_ASTEROID_DISTANCE(), Constants.MAX_ASTEROID_DISTANCE());
+  }
+
+  /**
+   * Returns a random altitude within the screens bounds.
+   */
+  method int getRandomAsteroidAltitude(int radius) {
+    return rng.randomFromInterval(radius, Constants.SCREEN_HEIGHT() - radius);
+  }
+
+  method int getSize() {
+    return size;
+  }
+
+  /**
+   * Returns the number of asteroids that have passed the left side of the screen.
+   */
+  method int getAsteroidsPassed() {
+    return asteroidsPassed;
+  }
+
+  method void increaseSpeed() {
+    do speed.add(1);
+    return;
+  }
+
+  /**
+   * Updates all asteroids. If one asteroid moved out on the left side of the screen
+   * it will be repositioned outside of the right edge of the screen, so that there
+   * is an endless stream of asteroids.
+   */
+  method void update(int timeElapsed) {
+    var int idx;
+    var boolean outOfBounds;
+    var Asteroid asteroid;
+    var int radius;
+
+    let mostRightAsteroidPosition = mostRightAsteroidPosition - speed.getValue();
+
+    let idx = 0;
+    while(idx < size) {
+      let asteroid = asteroids[idx];
+
+      do asteroid.move(-speed.getValue());
+
+      // Check if the asteroid moved out on the left side of the screen,
+      // in which case we reposition it to the right of the screen
+      let outOfBounds = asteroid.outOfLeftBounds();
+      if(outOfBounds) {
+        do asteroid.erase();
+        let radius = getRandomAsteroidRadius();
+        let mostRightAsteroidPosition = mostRightAsteroidPosition + getRandomAsteroidDistance();
+        do asteroid.setRadius(radius);
+        do asteroid.setX(mostRightAsteroidPosition);
+        do asteroid.setY(getRandomAsteroidAltitude(radius));
+        let asteroidsPassed = asteroidsPassed + 1;
+      }
+      let idx = idx + 1;
+    }
+    return;
+  }
+
+  method void draw() {
+    var int idx;
+    var Asteroid asteroid;
+    var boolean outOfBounds;
+
+    let idx = 0;
+    while(idx < size) {
+        let asteroid = asteroids[idx];
+        let outOfBounds = asteroid.outOfRightBounds();
+        if(~outOfBounds) {
+          do asteroid.draw();
+        }
+        let idx = idx + 1;
+    }
+    return;
+  }
+
+  /**
+   * Checks if any of the asteroids collides with the bounding rectangle. This is
+   * not very precise and only checks rectangle vs. rectangle instead of circle vs.
+   * rectangle. One could definitely improve this collision check.
+   */
+  method boolean checkForCollision(Rect boundingRect) {
+    var int idx;
+    var Asteroid asteroid;
+    var Rect asteroidRect;
+
+    let idx = 0;
+    while(idx < size) {
+      let asteroid = asteroids[idx];
+      let asteroidRect = asteroid.getBoundingRect();
+      if(boundingRect.intersects(asteroidRect)) {
+        do asteroidRect.dispose();
+        return true;
+      }
+      do asteroidRect.dispose();
+      let idx = idx + 1;
+    }
+    return false;
+  }
+
+  method void dispose() {
+    var int idx;
+    var Asteroid asteroid;
+
+    do asteroids.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+}

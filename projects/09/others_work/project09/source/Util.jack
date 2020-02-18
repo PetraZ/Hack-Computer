@@ -1,0 +1,56 @@
+class Util {
+  /**
+   * Creates an integer from any input string. Can be used to seed the RNG from
+   * the players name.
+   */
+  function int hashString(String input) {
+    var int idx;
+    var int result;
+
+    let result = 3023;  // just any random number, no particular meaning
+    let idx = 0;
+    while(idx < input.length()) {
+      let result = result * input.charAt(idx);
+      let idx = idx + 1;
+    }
+    return result;
+  }
+
+  /**
+   * Can be used to center text horizontally on the display. Calculates the
+   * cursor position based on the length of the input string and then positions
+   * the cursor in (row, column).
+   */
+  function void centerCursorHorizontally(String input, int row) {
+    do Output.moveCursor(row, (Constants.OUTPUT_COLUMNS() / 2) - (input.length() / 2));
+    return;
+  }
+
+  /**
+   * Types the input string with a delay between each character, giving the impression
+   * of live typing.
+   */
+  function void typeString(String input, int delay) {
+    var int idx;
+    let idx = 0;
+    while(idx < input.length()) {
+      do Output.printChar(input.charAt(idx));
+      let idx = idx + 1;
+      do Sys.wait(delay);
+    }
+    return;
+  }
+
+  /**
+   * Caps the integer between the min and max value.
+   */
+  function int capInt(int value, int min, int max) {
+    if(value < min) {
+      return min;
+    }
+    if(value > max) {
+      return max;
+    }
+    return value;
+  }
+}

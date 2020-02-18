@@ -1,0 +1,226 @@
+/**
+ * A snapshot of a single generation of a Game of Life world. Contains the contents of the world, 
+ * and methods for drawing the world.
+ */
+class World {
+  /** the world itself, represented by an array of arrays of boolean */
+  field Array world;
+  /** 
+   *  width: the width of the world in cells
+   *  height: the height of the world in cells
+   *  leftMargin: the left edge of where the world is drawn on the screen
+   *  topMargin: the top edge of where the world is drawn on the screen
+   *  cursorX: the x position of the editing cursor
+   *  cursorY: the y position of the editing cursor
+   *  prevCursorX: the previous x position of the editing cursor
+   *  prevCursorY: the previous y position of the editing cursor
+   */
+  field int width, height, leftMargin, topMargin, cursorX, cursorY, prevCursorX, prevCursorY;
+  /** whether the cursor should be shown */
+  field boolean showCursor;
+
+  /**
+   * Create a new world, given a width and a height for the world
+   */
+  constructor World new(int w, int h) {
+    var int i, j;
+    var Array row;
+    
+    let leftMargin = 184;
+    let topMargin = 5;
+    
+    let showCursor = false;
+    let cursorX = 0;
+    let cursorY = 0;
+    
+    let width = w;
+    let height = h;
+    let world = Array.new(height);
+    while (i < height) {
+      let row = Array.new(width);
+      let world[i] = row;
+      while (j < width) {
+        let row[j] = false;
+        let j = j + 1;
+      }
+      let j = 0;
+      let i = i + 1;
+    }
+    return this;
+  }
+  
+  /**
+   * Draw the world
+   */
+  method void draw() {
+    var int i, j;
+    var Array row;
+    
+    do drawBox();    
+    
+    while (i < height) {
+      let row = world[i];
+      while (j < width) {
+        do Screen.setColor(row[j]);
+        do Screen.drawRectangle(leftMargin+(j*5), topMargin+(i*5), leftMargin+(j*5)+5, topMargin + (i*5)+5);
+        let j = j + 1;
+      }
+      let j = 0;
+      let i = i + 1;
+    }
+    if (showCursor) {
+      do drawCursor();
+    }
+    return;
+  }
+  
+  /**
+   * Draw an individual cell in the world 
+   */
+  method void drawCell(int x, int y) {
+    var Array row;
+    let row = world[y];
+    do Screen.setColor(row[x]);
+    do Screen.drawRectangle(leftMargin+(x*5), topMargin+(y*5), leftMargin+(x*5)+5, topMargin+(y*5)+5);
+    return;
+  }
+  
+  /**
+   * Draw the cursor in the world. Draws the cursor as the following pattern:
+   * 
+   *  .X.X.
+   *  X...X
+   *  ..X..
+   *  X...X
+   *  .X.X.
+   */
+  method void drawCursor() {
+    var int centreX, centreY;
+    let centreX = leftMargin + (cursorX*5) + 2;
+    let centreY = topMargin + (cursorY*5) + 2;
+    
+    do Screen.setColor(true);
+    do Screen.drawRectangle(centreX - 2, centreY - 2, centreX + 2, centreY + 2);
+    do Screen.setColor(false);
+    do Screen.drawPixel(centreX, centreY-2);
+    do Screen.drawPixel(centreX, centreY+2);
+    do Screen.drawPixel(centreX-2, centreY);
+    do Screen.drawPixel(centreX+2, centreY);
+    do Screen.setColor(true);
+    do Screen.drawRectangle(centreX - 1, centreY - 1, centreX + 1, centreY + 1);
+    do Screen.setColor(false);
+    do Screen.drawPixel(centreX, centreY);
+    
+    return;
+  }
+  
+  /**
+   * Get the value of an individual cell within the world
+   */
+  method boolean getCell(int x, int y) {
+    var Array row;
+    let row = world[y];
+    return row[x];
+  }
+  
+  /**
+   * Draw the border box surrounding the world.
+   */
+  method void drawBox() {
+    var int boxw, boxh;
+    
+    let boxw = (5*width) + 2;
+    let boxh = (5*height) + 2;
+  
+    do Screen.setColor(true);
+    do Screen.drawLine(leftMargin-1, topMargin-1, leftMargin-1, topMargin-1 + boxh);
+    do Screen.drawLine(leftMargin-1, topMargin-1, leftMargin-1 + boxw, topMargin-1);
+    do Screen.drawLine(leftMargin-1, topMargin-1 + boxh, leftMargin-1 + boxw, topMargin-1 + boxh);
+    do Screen.drawLine(leftMargin-1 + boxw, topMargin-1, leftMargin-1 + boxw, topMargin-1 + boxh);
+    
+    return;
+  }
+  
+  /**
+   * Set the value of an individual cell in the world.
+   */
+  method void setCell(int x, int y, boolean value) {
+    var Array row;
+    let row = world[y];
+    let row[x] = value;
+    
+    return;
+  }
+  
+  /**
+   * Flip the value of an individual cell in the world.
+   */
+  method void flipCell(int x, int y) {
+    do setCell(x, y, ~getCell(x, y));
+    return;
+  }
+  
+  /**
+   * Set the location for the cursor, and update the drawing of the world to show its new location.
+   */
+  method void setCursor(int x, int y) {
+    let prevCursorX = cursorX;
+    let prevCursorY = cursorY;
+    let cursorX = x;
+    let cursorY = y;
+    
+    do drawCell(prevCursorX, prevCursorY);
+    if (showCursor) {
+      do drawCursor();
+    }
+    
+    return;
+  }
+  
+  /**
+   * Set whether the cursor should be shown when the world is drawn.
+   */
+  method void setShowCursor(boolean show) {
+    let showCursor = show;
+    
+    return;
+  }
+  
+  /**
+   * Clear all living cells from the world
+   */
+  method void clear() {
+    var Array row;
+    var int i, j;
+    
+    while (i < height) {
+      let row = world[i];
+      while (j < width) {
+        let row[j] = false;
+        let j = j + 1;
+      } 
+      let j = 0;
+      let i = i + 1;
+    }
+    
+    return;
+  }
+  
+  /**
+   * Dispose of the world
+   */
+  method void dispose() {
+    var int i;
+    var Array row;
+    
+    let i = 0;
+    while (i < height) {
+      let row = world[i];
+      do row.dispose();
+      let i = i + 1;
+    }
+    do world.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+}

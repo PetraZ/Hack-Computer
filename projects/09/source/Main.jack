@@ -1,0 +1,10 @@
+
+class Main {
+
+  function void main() {
+    var Game game;
+    do Screen.clearScreen();
+    let game = Game.new();
+    return;
+  }
+}

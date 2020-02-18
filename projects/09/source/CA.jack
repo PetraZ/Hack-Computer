@@ -1,0 +1,199 @@
+// --------------------------------------------------------------------
+// Application: One-dimensional Cellular Automaton Viewer
+// File name: CA.jack
+// --------------------------------------------------------------------
+// Class CA for the cellular automaton viewer program, created with the
+// Jack programming language by Helmut Bittermann for the Nand to
+// Tetris course on Coursera (2017/08).
+// --------------------------------------------------------------------
+
+/** The CA (Cellular Automaton) class provides one-dimensional cellular
+    automata objects consisting of cells which have only two possible
+	states (alive or dead), the state of each cell is influenced by the
+	states of the two immediately adjacent cells. For such a constellation
+	256 so-called transistion rules are possible for the development of 
+	the cells over time. This class can calculate and graphically present
+	these 256 different transistion rules on the Hack computer screen.
+	
+	For the generation of random start conditions the LCGRandom class
+	from Rowan Limb is used.
+*/
+class CA {
+     
+	field Array ca;        // Cellular automaton
+	field int caSize;      // Size of the automaton (number of cells)
+	field Array rule;      // Array for converting the transistion rule
+	field int ruleNumber;  // Transition rule number
+	
+	constructor CA new(int AcaSize, int AruleNumber) {
+		
+		let caSize = AcaSize;
+		let ca = Array.new(caSize);
+		let rule = Array.new(8);
+		do setRuleNumber(AruleNumber);
+		return this;
+	}
+	
+	method void dispose() {
+		
+		do Array.dispose(ca);
+		do Array.dispose(rule);
+		do Memory.deAlloc(this);
+		return;
+	}
+	
+	// Setting all cells to false
+	method void resetCells()
+	{
+		var int i;
+		
+		let i = 0;
+		while (i < caSize) {
+			let ca[i] = false;
+			let i = i + 1;
+		}
+		return;
+	}
+	
+	// Sets the state of a cell with a given number 
+	method void setCellState(int num, boolean state) {
+		
+		if ((num > -1) & (num < caSize)) {
+			let ca[num] = state;
+		}
+		return;
+	}
+	
+	// Set random start states for all cells
+	method void setRandomStates() {
+		
+		var int i, randValue;
+		
+		let i = 0;
+		while (i < caSize) {
+			let randValue = LCGRandom.rand();
+			if (randValue < 16374) {
+				let ca[i] =  true;
+			}
+			else {
+				let ca[i] = false;
+			}
+			let i = i + 1;
+		}
+		return;
+	}
+	
+	// Converts the rule number form integer to an array of boolean values, whereby
+	// each bit of the value is represented by true (if 1) or false (if 0) 
+	method void setRuleNumber(int AruleNumber){
+		
+		let ruleNumber = AruleNumber;
+	
+		if (ruleNumber & 1  = 1) { let rule[0] = true; } else { let rule[0] = false; }
+		if (ruleNumber & 2  = 2) { let rule[1] = true; } else { let rule[1] = false; }
+		if (ruleNumber & 4  = 4) { let rule[2] = true; } else { let rule[2] = false; }
+		if (ruleNumber & 8  = 8) { let rule[3] = true; } else { let rule[3] = false; }
+		if (ruleNumber & 16 = 16) { let rule[4] = true; } else { let rule[4] = false; }
+		if (ruleNumber & 32 = 32) { let rule[5] = true; } else { let rule[5] = false; }
+		if (ruleNumber & 64 = 64) { let rule[6] = true; } else { let rule[6] = false; }
+		if (ruleNumber & 128 = 128) { let rule[7] = true; } else { let rule[7] = false; }		
+		return;
+	}
+	
+	// Returns the actual rule number
+	method int getRuleNumber() {
+		return ruleNumber;	
+	}
+	
+	// Calculates the next generation of the cellular automaton for the actual
+	// transistion rule using their boolean representation in the rule array
+	method void calculateNextGeneration() {
+		
+		var Array caNew; // Array for temporary saving of the next generation
+		var int i;
+ 		var boolean leftCell, middleCell, rightCell; // Cells of the actual neighborhood 
+		
+		let caNew = Array.new(caSize);
+		let i = 0;
+		while (i < caSize) {
+			// Periodic boundary conditions are used
+			if (i = 0) { let leftCell = ca[caSize - 1];	}
+				else { let leftCell = ca[i - 1]; }
+			if (i = (caSize - 1)) {	let rightCell = ca[0];	}
+				else { let rightCell = ca[i + 1]; }
+			let middleCell = ca[i];
+			// Calculate the development of the middleCell 
+			let caNew[i] = false;
+			if (leftCell & middleCell & rightCell) { let caNew[i] = rule[7]; }
+			if (leftCell & middleCell & ~rightCell) { let caNew[i] = rule[6]; }
+			if (leftCell & ~middleCell & rightCell) { let caNew[i] = rule[5]; }
+			if (leftCell & ~middleCell & ~rightCell) { let caNew[i] = rule[4]; }
+			if (~leftCell & middleCell & rightCell) { let caNew[i] = rule[3]; }
+			if (~leftCell & middleCell & ~rightCell) {	let caNew[i] = rule[2]; }
+			if (~leftCell & ~middleCell & rightCell) {	let caNew[i] = rule[1]; }
+			if (~leftCell & ~middleCell & ~rightCell) { let caNew[i] = rule[0]; }
+			let i = i + 1;
+		}
+		
+		// Copy the new generation into the original array:
+		let i = 0;
+		while (i < caSize) {
+			let ca[i] = caNew[i];
+			let i = i + 1;
+		}
+		do Array.dispose(caNew);
+			
+		return;
+	}
+	
+	// Draws the actual states of all cells of the cellular automaton as squares on the
+    // Hack display. A cell which has the state true is drawn black.
+	method void drawCells(int x, int y, int s) {
+		
+		var int i;
+		
+		let i = 0;
+		while (i < (caSize)) {
+			
+			if (ca[i]) {
+				do Screen.setColor(true);
+				do Screen.drawRectangle(x, y, x + s - 1, y + s - 1);
+			}
+			let x = x + s;
+			let i = i + 1;
+		}
+		return;
+	}
+	
+	// Draws the evolution in time of the cellular automaton on the Hack computer screen.
+	// Starting coordinates, cell size and number of generations must be given.
+	// If in this time consuming process keys are pressed, the code of the last pressed 
+	// key is returned to the caller.
+	method int drawEvolution(int x, int y, int cellSize, int generations) {
+		
+		var int i, key, keyReturn;
+		
+		let i = 0;
+		let key = 0;
+		let keyReturn = 0;
+		while (i < generations) {
+			
+			// Draw current generation:
+			do drawCells(x, y, cellSize);
+			let key = Keyboard.keyPressed();
+			if (~(key = 0)) { let keyReturn = key; }
+			
+			// Calculate next generation:
+			do calculateNextGeneration();
+			let key = Keyboard.keyPressed();
+			if (~(key = 0)) { let keyReturn = key; }
+			
+			let y = y + cellSize;
+			let i = i + 1;
+			let key = Keyboard.keyPressed();
+			if (~(key = 0)) { let keyReturn = key; }
+		}
+		
+		return keyReturn;
+	}	
+}

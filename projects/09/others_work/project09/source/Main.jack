@@ -1,0 +1,23 @@
+class Main {
+  function void main() {
+    var RNG rng;
+    var Rocket rocket;
+    var AsteroidField asteroids;
+    var Game game;
+
+    // create game entities
+    let rng = RNG.new(23456);
+    let rocket = Rocket.new(Constants.MAX_ASTEROID_SIZE(), Constants.SCREEN_HEIGHT() / 2 - 10);
+    let asteroids = AsteroidField.new(5, rng);
+    let game = Game.new(rocket, asteroids, rng);
+
+    // run game
+    do game.run();
+
+    // clean up ressources
+    do game.dispose();
+    do rocket.dispose();
+    do asteroids.dispose();
+    return;
+  }
+}

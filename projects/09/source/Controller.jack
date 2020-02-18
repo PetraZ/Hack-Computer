@@ -1,0 +1,250 @@
+
+/**
+ * Handler for user input and output. 
+ */
+class Controller {
+  
+  /** states for the internal state machine of the controller */
+  /** ready for normal user input */
+  static int READY;
+  /** currently playing - looping through generations continuously */
+  static int PLAY;
+  /** the user can edit the world directly */
+  static int EDIT;
+  /** the user has requested to quit */
+  static int QUIT;
+  
+  /** keyboard input constants */
+  static char C;
+  static char E;
+  static char G;
+  static char Q;
+  static char R;
+  static char SPACE;
+  static char ESCAPE;
+  static char LEFT;
+  static char RIGHT;
+  static char UP;
+  static char DOWN;
+  
+  /** the game being controlled by the controller */
+  field Game game;
+  /** the current state of the controller */
+  field int state;
+  /** the location of the editing cursor */
+  field int cursorX, cursorY;
+
+  /**
+   * Construct a new controller, attached to the given game. This also begins the main loop for the "game".
+   */
+  constructor Controller new(Game theGame) {
+    var boolean continue;
+    var char input;
+    
+    do Controller.initStatics();
+    
+    let state = READY;
+    
+    do printInstructions();
+    
+    let continue = true;
+    
+    let game = theGame;
+    
+    while (continue) {
+      let input = Keyboard.keyPressed();
+      if (state = READY) {
+        do readyLoop(input);
+      } else {  
+        if (state = PLAY) {
+          do playLoop(input);
+        } else {
+          if (state = EDIT) {
+            do editLoop(input);
+          } else {
+            if (state = QUIT) {
+              let continue = false;
+            }
+          }
+        }
+      }
+    }
+    return this;
+  }
+  
+  /**
+   * Take the actions required each iteration when the game is in the READY state. Checks for user 
+   * input and responds accordingly.
+   */
+  method void readyLoop(char input) {
+    if (input = C) {
+      do game.advanceCatalogue();
+    } 
+    if (input = E) {
+      do updateState(EDIT);
+    }
+    if (input = G) {
+      do updateState(PLAY);
+    }
+    if (input = Q) {
+      do updateState(QUIT);
+    }
+    if (input = R) {
+      do game.clear();
+    }
+    if (input = SPACE) {
+      do game.advanceGeneration();
+    }
+    return;
+  }
+  
+  /**
+   * Take the actions required each iteration when the game is in the PLAY state. Checks whether
+   * the user has requested to pause the simulation, or otherwise advances the game by a 
+   * generation. The Hack computer executes each generation so slowly that no timing or delaying is
+   * necessary between generations.
+   */
+  method void playLoop(char input) {
+    if (input = SPACE) {
+      do updateState(READY);
+    } else {
+      do game.advanceGeneration();
+    }
+    return;
+  }
+  
+  /**
+   * Take the actions required each iteration when the game is in the EDIT state. Checks for user
+   * input to control the cursor or exit edit mode, and responds accordingly.
+   */
+  method void editLoop(char input) {
+    if (input > 0) {
+      if (input = ESCAPE) {
+        do updateState(READY);
+        do game.setShowCursor(false);
+      }
+      if ((input = LEFT) & (cursorX > 0)) {
+        let cursorX = cursorX - 1; 
+      }
+      if ((input = UP) & (cursorY > 0)) {
+        let cursorY = cursorY - 1;
+      }
+      if ((input = RIGHT) & (cursorX < game.getWidth())) {
+        let cursorX = cursorX + 1;
+      }
+      if ((input = DOWN) & (cursorY < game.getHeight())) {
+        let cursorY = cursorY + 1;
+      }
+      if (input = SPACE) {
+        do game.flipCell(cursorX, cursorY);
+      }
+      do game.setCursor(cursorX, cursorY);
+    }
+    return;
+  }
+  
+  /**
+   * Update the state of the controller's internal state machine. Updates the instructions printed
+   * on the screen, and takes whatever action is necessary for the new state.
+   */
+  method void updateState(int newState) {
+    let state = newState;
+    do printInstructions();
+    do Output.moveCursor(22, 0);
+    if (state = READY) {
+      do Output.printString("READY");
+    } 
+    if (state = PLAY) {
+      do Output.printString("PLAYING");
+    }
+    if (state = EDIT) {
+      do Output.printString("EDIT");
+      do game.setShowCursor(true);
+    }
+    return;
+  }
+  
+  /**
+   *
+   */
+  method void printInstructions() {
+    var int i;
+    
+    do Output.moveCursor(0, 0);
+    while (i < 23) {
+      do Output.printString("                      ");
+      do Output.println();
+      let i = i+1;
+    }
+    do Output.moveCursor(0,0);
+    do Output.printString("Conway's Game of Life");
+    do Output.println();
+    do Output.println();
+    do Output.printString("For details, see");
+    do Output.println();
+    do Output.printString("goo.gl/9rVEsS");
+    do Output.println();
+    do Output.println();
+    do Output.printString("Controls:");
+    do Output.println();
+    if (state = READY) {
+      do Output.printString("C: catalogue - select");
+      do Output.println();
+      do Output.printString("  the next start pos.");
+      do Output.println();
+      do Output.printString("<Space>: Advance one");
+      do Output.println();
+      do Output.printString("  generation");
+      do Output.println();
+      do Output.printString("G: Go - advance in");
+      do Output.println();
+      do Output.printString("  continuous mode.");
+      do Output.println();
+      do Output.printString("E: Edit mode");
+      do Output.println();
+      do Output.printString("R: Reset world");
+      do Output.println();
+      
+      do Output.printString("Q: Quit");
+    }
+    if (state = PLAY) {
+      do Output.printString("<Space>: pause the ");
+      do Output.println();
+      do Output.printString("   simulation.");
+    }
+    if (state = EDIT) {
+      do Output.printString("Arrow keys to move");
+      do Output.println();
+      do Output.printString("   cursor");
+      do Output.println();
+      do Output.printString("<Space>: flip the ");
+      do Output.println();
+      do Output.printString("  currently selected");
+      do Output.println();
+      do Output.printString("  cell.");
+      do Output.println();
+      do Output.printString("<Escape>: exit edit.");
+    }
+    return;
+  }
+  
+  function void initStatics() {    
+    let READY = 0;
+    let PLAY = 1;
+    let EDIT = 2;
+    
+    let C = 67;
+    let E = 69;
+    let G = 71;
+    let Q = 81;
+    let R = 82;
+    let SPACE = 32;
+    let LEFT = 130;
+    let UP = 131;
+    let RIGHT = 132;
+    let DOWN = 133;
+    let ESCAPE = 140;
+    
+    return;
+  }
+}

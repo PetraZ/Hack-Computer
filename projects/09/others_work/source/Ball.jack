@@ -1,0 +1,92 @@
+/** Implements a ball as a graphical square. */
+class Ball {
+
+   field int x, y; // screen location of the ball's top-left corner
+   field int dx, dy; // speed of the ball in x and y direction, in pixels
+
+   /** Constructs a new ball with a given location and size. */
+   constructor Ball new(int Ax, int Ay, int Adx, int Ady) {
+      let x = Ax;
+      let y = Ay;
+      let dx = Adx;
+      let dy = Ady;
+      do drawBall();
+      return this;
+   }
+
+   /** Disposes this ball. */
+   method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Draws the ball on the screen. */
+   method void drawBall() {
+      do Screen.setColor(true);
+      do Screen.drawRectangle(x, y, x + 8, y + 8);
+      return;
+   }
+
+   /** Erases the ball from the screen. */
+   method void eraseBall() {
+      do Screen.setColor(false);
+      do Screen.drawRectangle(x, y, x + 8, y + 8);
+      return;
+   }
+
+   /** Returns x position of ball. */
+   method int getX() {
+      return x;
+   }
+
+   /** Returns y position of ball. */
+   method int getY() {
+      return y;
+   }
+
+   /** Moves the ball by dx and dy. */
+   method void moveBall() {
+      do eraseBall();
+      if (dx > 0) {
+        if (x < (511-8-dx)) {
+          let x = x+dx;
+        }
+        else {
+          let dx = -dx;
+          let x = x+dx; // invert direction of ball
+        }
+      }
+
+      if (dx < 0) {
+        if (x > -dx) {
+          let x = x+dx;
+        }
+        else {
+          let dx = -dx;
+          let x = x+dx; // invert direction of ball
+        }
+      }
+
+      if (dy > 0) {
+        if (y < (255-8-dy)) {
+          let y = y+dy;
+        }
+        else {
+          let dy = -dy;
+          let y = y+dy; // invert direction of ball
+        }
+      }
+
+      if (dy < 0) {
+        if (y > -dy) {
+          let y = y+dy;
+        }
+        else {
+          let dy = -dy;
+          let y = y+dy; // invert direction of ball
+        }
+      }
+      do drawBall();
+      return;
+   }
+}

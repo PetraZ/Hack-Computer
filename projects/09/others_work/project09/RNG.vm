@@ -1,0 +1,77 @@
+function RNG.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push argument 0
+call RNG.absolute 1
+pop this 0
+push constant 727
+pop this 1
+push constant 3797
+pop this 2
+push constant 16333
+pop this 3
+push pointer 0
+return
+function RNG.setSeed 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 0
+push constant 0
+return
+function RNG.getSeed 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function RNG.random 0
+push argument 0
+pop pointer 0
+push this 1
+push this 0
+call Math.multiply 2
+push this 2
+add
+push this 3
+call RNG.modulo 2
+call RNG.absolute 1
+pop this 0
+push this 0
+return
+function RNG.randomFromInterval 0
+push argument 0
+pop pointer 0
+push argument 1
+push pointer 0
+call RNG.random 1
+push argument 2
+push argument 1
+sub
+call RNG.modulo 2
+add
+return
+function RNG.modulo 0
+push argument 0
+push argument 0
+push argument 1
+call Math.divide 2
+push argument 1
+call Math.multiply 2
+sub
+return
+function RNG.absolute 0
+push argument 0
+push constant 0
+lt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push argument 0
+not
+push constant 1
+add
+return
+label IF_FALSE0
+push argument 0
+return

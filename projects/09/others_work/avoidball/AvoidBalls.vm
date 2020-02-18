@@ -1,0 +1,324 @@
+function AvoidBalls.new 0
+push constant 5
+call Memory.alloc 1
+pop pointer 0
+push constant 255
+push constant 16
+sub
+push constant 127
+push constant 16
+sub
+push constant 32
+call Player.new 3
+pop this 0
+push constant 0
+pop this 1
+push constant 10
+push constant 10
+push constant 3
+push constant 3
+call Ball.new 4
+pop this 2
+push constant 511
+push constant 10
+sub
+push constant 10
+push constant 2
+push constant 4
+call Ball.new 4
+pop this 3
+push constant 10
+push constant 255
+push constant 10
+sub
+push constant 4
+push constant 2
+call Ball.new 4
+pop this 4
+push pointer 0
+return
+function AvoidBalls.dispose 0
+push argument 0
+pop pointer 0
+push this 0
+call Player.dispose 1
+pop temp 0
+push this 2
+call Ball.dispose 1
+pop temp 0
+push this 3
+call Ball.dispose 1
+pop temp 0
+push this 4
+call Ball.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function AvoidBalls.movePlayer 0
+push argument 0
+pop pointer 0
+push this 1
+push constant 1
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 0
+call Player.moveUp 1
+pop temp 0
+label IF_FALSE0
+push this 1
+push constant 2
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 0
+call Player.moveDown 1
+pop temp 0
+label IF_FALSE1
+push this 1
+push constant 3
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push this 0
+call Player.moveLeft 1
+pop temp 0
+label IF_FALSE2
+push this 1
+push constant 4
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push this 0
+call Player.moveRight 1
+pop temp 0
+label IF_FALSE3
+push constant 0
+return
+function AvoidBalls.inRange 6
+push argument 0
+pop pointer 0
+push this 0
+call Player.getX 1
+pop local 0
+push this 0
+call Player.getX 1
+push this 0
+call Player.getSize 1
+add
+pop local 1
+push this 0
+call Player.getY 1
+pop local 2
+push this 0
+call Player.getY 1
+push this 0
+call Player.getSize 1
+add
+pop local 3
+push argument 1
+call Ball.getX 1
+push constant 8
+add
+push local 0
+gt
+push argument 1
+call Ball.getX 1
+push local 1
+lt
+and
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 4
+goto IF_END0
+label IF_FALSE0
+push constant 0
+pop local 4
+label IF_END0
+push argument 1
+call Ball.getY 1
+push constant 8
+add
+push local 2
+gt
+push argument 1
+call Ball.getY 1
+push local 3
+lt
+and
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 0
+not
+pop local 5
+goto IF_END1
+label IF_FALSE1
+push constant 0
+pop local 5
+label IF_END1
+push local 4
+push local 5
+and
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 0
+not
+return
+label IF_FALSE2
+push constant 0
+return
+function AvoidBalls.checkCollision 3
+push argument 0
+pop pointer 0
+push pointer 0
+push this 2
+call AvoidBalls.inRange 2
+pop local 0
+push pointer 0
+push this 3
+call AvoidBalls.inRange 2
+pop local 1
+push pointer 0
+push this 4
+call AvoidBalls.inRange 2
+pop local 2
+push local 0
+push local 1
+or
+push local 2
+or
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 11
+push constant 28
+call Output.moveCursor 2
+pop temp 0
+push constant 9
+call String.new 1
+push constant 71
+call String.appendChar 2
+push constant 97
+call String.appendChar 2
+push constant 109
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 32
+call String.appendChar 2
+push constant 79
+call String.appendChar 2
+push constant 118
+call String.appendChar 2
+push constant 101
+call String.appendChar 2
+push constant 114
+call String.appendChar 2
+call Output.printString 1
+pop temp 0
+push constant 0
+not
+return
+label IF_FALSE0
+push constant 0
+return
+function AvoidBalls.run 2
+push argument 0
+pop pointer 0
+push constant 0
+pop local 1
+label WHILE_EXP0
+push local 1
+not
+not
+if-goto WHILE_END0
+push local 0
+push constant 81
+eq
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push constant 0
+not
+pop local 1
+label IF_FALSE0
+push local 0
+push constant 131
+eq
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push constant 1
+pop this 1
+label IF_FALSE1
+push local 0
+push constant 133
+eq
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
+push constant 2
+pop this 1
+label IF_FALSE2
+push local 0
+push constant 130
+eq
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
+push constant 3
+pop this 1
+label IF_FALSE3
+push local 0
+push constant 132
+eq
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
+push constant 4
+pop this 1
+label IF_FALSE4
+call Keyboard.keyPressed 0
+pop local 0
+push local 0
+push constant 0
+eq
+not
+if-goto IF_TRUE5
+goto IF_FALSE5
+label IF_TRUE5
+push pointer 0
+call AvoidBalls.movePlayer 1
+pop temp 0
+label IF_FALSE5
+push this 2
+call Ball.moveBall 1
+pop temp 0
+push this 3
+call Ball.moveBall 1
+pop temp 0
+push this 4
+call Ball.moveBall 1
+pop temp 0
+push pointer 0
+call AvoidBalls.checkCollision 1
+pop local 1
+push constant 50
+call Sys.wait 1
+pop temp 0
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return

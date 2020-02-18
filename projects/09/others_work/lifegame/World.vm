@@ -1,0 +1,538 @@
+function World.new 3
+push constant 10
+call Memory.alloc 1
+pop pointer 0
+push constant 184
+pop this 3
+push constant 5
+pop this 4
+push constant 0
+pop this 9
+push constant 0
+pop this 5
+push constant 0
+pop this 6
+push argument 0
+pop this 1
+push argument 1
+pop this 2
+push this 2
+call Array.new 1
+pop this 0
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push this 1
+call Array.new 1
+pop local 2
+push local 0
+push this 0
+add
+push local 2
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+label WHILE_EXP1
+push local 1
+push this 1
+lt
+not
+if-goto WHILE_END1
+push local 1
+push local 2
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push constant 0
+pop local 1
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push pointer 0
+return
+function World.draw 3
+push argument 0
+pop pointer 0
+push pointer 0
+call World.drawBox 1
+pop temp 0
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 2
+label WHILE_EXP1
+push local 1
+push this 1
+lt
+not
+if-goto WHILE_END1
+push local 1
+push local 2
+add
+pop pointer 1
+push that 0
+call Screen.setColor 1
+pop temp 0
+push this 3
+push local 1
+push constant 5
+call Math.multiply 2
+add
+push this 4
+push local 0
+push constant 5
+call Math.multiply 2
+add
+push this 3
+push local 1
+push constant 5
+call Math.multiply 2
+add
+push constant 5
+add
+push this 4
+push local 0
+push constant 5
+call Math.multiply 2
+add
+push constant 5
+add
+call Screen.drawRectangle 4
+pop temp 0
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP1
+label WHILE_END1
+push constant 0
+pop local 1
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 9
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call World.drawCursor 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function World.drawCell 1
+push argument 0
+pop pointer 0
+push argument 2
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push argument 1
+push local 0
+add
+pop pointer 1
+push that 0
+call Screen.setColor 1
+pop temp 0
+push this 3
+push argument 1
+push constant 5
+call Math.multiply 2
+add
+push this 4
+push argument 2
+push constant 5
+call Math.multiply 2
+add
+push this 3
+push argument 1
+push constant 5
+call Math.multiply 2
+add
+push constant 5
+add
+push this 4
+push argument 2
+push constant 5
+call Math.multiply 2
+add
+push constant 5
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+return
+function World.drawCursor 2
+push argument 0
+pop pointer 0
+push this 3
+push this 5
+push constant 5
+call Math.multiply 2
+add
+push constant 2
+add
+pop local 0
+push this 4
+push this 6
+push constant 5
+call Math.multiply 2
+add
+push constant 2
+add
+pop local 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push local 0
+push constant 2
+sub
+push local 1
+push constant 2
+sub
+push local 0
+push constant 2
+add
+push local 1
+push constant 2
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 0
+push local 1
+push constant 2
+sub
+call Screen.drawPixel 2
+pop temp 0
+push local 0
+push local 1
+push constant 2
+add
+call Screen.drawPixel 2
+pop temp 0
+push local 0
+push constant 2
+sub
+push local 1
+call Screen.drawPixel 2
+pop temp 0
+push local 0
+push constant 2
+add
+push local 1
+call Screen.drawPixel 2
+pop temp 0
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push local 0
+push constant 1
+sub
+push local 1
+push constant 1
+sub
+push local 0
+push constant 1
+add
+push local 1
+push constant 1
+add
+call Screen.drawRectangle 4
+pop temp 0
+push constant 0
+call Screen.setColor 1
+pop temp 0
+push local 0
+push local 1
+call Screen.drawPixel 2
+pop temp 0
+push constant 0
+return
+function World.getCell 1
+push argument 0
+pop pointer 0
+push argument 2
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push argument 1
+push local 0
+add
+pop pointer 1
+push that 0
+return
+function World.drawBox 2
+push argument 0
+pop pointer 0
+push constant 5
+push this 1
+call Math.multiply 2
+push constant 2
+add
+pop local 0
+push constant 5
+push this 2
+call Math.multiply 2
+push constant 2
+add
+pop local 1
+push constant 0
+not
+call Screen.setColor 1
+pop temp 0
+push this 3
+push constant 1
+sub
+push this 4
+push constant 1
+sub
+push this 3
+push constant 1
+sub
+push this 4
+push constant 1
+sub
+push local 1
+add
+call Screen.drawLine 4
+pop temp 0
+push this 3
+push constant 1
+sub
+push this 4
+push constant 1
+sub
+push this 3
+push constant 1
+sub
+push local 0
+add
+push this 4
+push constant 1
+sub
+call Screen.drawLine 4
+pop temp 0
+push this 3
+push constant 1
+sub
+push this 4
+push constant 1
+sub
+push local 1
+add
+push this 3
+push constant 1
+sub
+push local 0
+add
+push this 4
+push constant 1
+sub
+push local 1
+add
+call Screen.drawLine 4
+pop temp 0
+push this 3
+push constant 1
+sub
+push local 0
+add
+push this 4
+push constant 1
+sub
+push this 3
+push constant 1
+sub
+push local 0
+add
+push this 4
+push constant 1
+sub
+push local 1
+add
+call Screen.drawLine 4
+pop temp 0
+push constant 0
+return
+function World.setCell 1
+push argument 0
+pop pointer 0
+push argument 2
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+push argument 1
+push local 0
+add
+push argument 3
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push constant 0
+return
+function World.flipCell 0
+push argument 0
+pop pointer 0
+push pointer 0
+push argument 1
+push argument 2
+push pointer 0
+push argument 1
+push argument 2
+call World.getCell 3
+not
+call World.setCell 4
+pop temp 0
+push constant 0
+return
+function World.setCursor 0
+push argument 0
+pop pointer 0
+push this 5
+pop this 7
+push this 6
+pop this 8
+push argument 1
+pop this 5
+push argument 2
+pop this 6
+push pointer 0
+push this 7
+push this 8
+call World.drawCell 3
+pop temp 0
+push this 9
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call World.drawCursor 1
+pop temp 0
+label IF_FALSE0
+push constant 0
+return
+function World.setShowCursor 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 9
+push constant 0
+return
+function World.clear 3
+push argument 0
+pop pointer 0
+label WHILE_EXP0
+push local 1
+push this 2
+lt
+not
+if-goto WHILE_END0
+push local 1
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 0
+label WHILE_EXP1
+push local 2
+push this 1
+lt
+not
+if-goto WHILE_END1
+push local 2
+push local 0
+add
+push constant 0
+pop temp 0
+pop pointer 1
+push temp 0
+pop that 0
+push local 2
+push constant 1
+add
+pop local 2
+goto WHILE_EXP1
+label WHILE_END1
+push constant 0
+pop local 2
+push local 1
+push constant 1
+add
+pop local 1
+goto WHILE_EXP0
+label WHILE_END0
+push constant 0
+return
+function World.dispose 2
+push argument 0
+pop pointer 0
+push constant 0
+pop local 0
+label WHILE_EXP0
+push local 0
+push this 2
+lt
+not
+if-goto WHILE_END0
+push local 0
+push this 0
+add
+pop pointer 1
+push that 0
+pop local 1
+push local 1
+call Array.dispose 1
+pop temp 0
+push local 0
+push constant 1
+add
+pop local 0
+goto WHILE_EXP0
+label WHILE_END0
+push this 0
+call Array.dispose 1
+pop temp 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

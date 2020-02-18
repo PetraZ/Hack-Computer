@@ -1,0 +1,117 @@
+/**
+ * Implements the Avoid Balls game.
+ * The player in the game needs to try to avoid the balls by moving
+ * up, down, left or right.
+ */
+
+class AvoidBalls {
+   field Player player; // the player of this game
+   field int direction; // the players's current direction:
+                        // 0=none, 1=up, 2=down, 3=left, 4=right
+   field Ball ball1, ball2, ball3; // first ball in this game
+
+   /** Constructs a new Avoid Balls Game. */
+   constructor AvoidBalls new() {
+      // Creates a player and positions it at the middle
+      // of the screen.
+      let player = Player.new(255-16, 127-16, 32);
+      let direction = 0;  // initial state is no movement
+      let ball1 = Ball.new(10,10,3,3);
+      let ball2 = Ball.new(511-10,10,2,4);
+      let ball3 = Ball.new(10,255-10,4,2);
+      return this;
+   }
+
+   /** Disposes this game. */
+   method void dispose() {
+      do player.dispose();
+      do ball1.dispose();
+      do ball2.dispose();
+      do ball3.dispose();
+      do Memory.deAlloc(this);
+      return;
+   }
+
+   /** Moves the player in the current direction. */
+   method void movePlayer() {
+      if (direction = 1) { do player.moveUp(); }
+      if (direction = 2) { do player.moveDown(); }
+      if (direction = 3) { do player.moveLeft(); }
+      if (direction = 4) { do player.moveRight(); }
+      return;
+   }
+
+   method boolean inRange(Ball checkBall) {
+    var int xmin, xmax, ymin, ymax;
+    var boolean inRangeX, inRangeY;
+
+    let xmin = player.getX();
+    let xmax = player.getX()+player.getSize();
+    let ymin = player.getY();
+    let ymax = player.getY()+player.getSize();
+
+    if (((checkBall.getX()+8) > xmin) & (checkBall.getX() < xmax)) {
+      let inRangeX = true;
+    }
+    else {
+      let inRangeX = false;
+    }
+    if (((checkBall.getY()+8) > ymin) & (checkBall.getY() < ymax)) {
+      let inRangeY = true;
+    }
+    else {
+      let inRangeY = false;
+    }
+    if (inRangeX & inRangeY) {
+      return true;
+    }
+    return false;
+   }
+
+   /** Checks for collision of player with a ball. */
+   method boolean checkCollision() {
+   var boolean collision1, collision2, collision3;
+   let collision1 = inRange(ball1);
+   let collision2 = inRange(ball2);
+   let collision3 = inRange(ball3);
+      if (collision1 | collision2 | collision3) {
+        // do ball1.eraseBall();
+        // do ball2.eraseBall();
+        // do ball3.eraseBall();
+        // do player.erase();
+        do Output.moveCursor(11,28);
+        do Output.printString("Game Over");
+        return true;
+      }
+      return false;
+   }
+
+   /** Runs the game: handles the user's inputs and moves the square accordingly */
+   method void run() {
+      var char key;  // the key currently pressed by the user
+      var boolean exit;
+      let exit = false;
+
+      while (~exit) {
+
+         if (key = 81)  { let exit = true; }     // q key
+         if (key = 131) { let direction = 1; }   // up arrow
+         if (key = 133) { let direction = 2; }   // down arrow
+         if (key = 130) { let direction = 3; }   // left arrow
+         if (key = 132) { let direction = 4; }   // right arrow
+
+         // waits for the key to be released
+         let key = Keyboard.keyPressed();
+         if (~(key = 0)) {
+            do movePlayer();
+         }
+         do ball1.moveBall();
+         do ball2.moveBall();
+         do ball3.moveBall();
+         let exit = checkCollision();
+         do Sys.wait(50);  // delays the next movement
+
+     } // while
+     return;
+   }
+}

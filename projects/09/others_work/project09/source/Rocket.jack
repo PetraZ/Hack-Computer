@@ -1,0 +1,166 @@
+/**
+ * A rocket that can be accelerated up and down and otherwise slowly decelerates.
+ */
+class Rocket {
+  field int x;
+  field int y;
+  field int lastLocation;
+  field int width;
+  field int height;
+  field int acceleration;
+  field int scaleBy;
+  field int accelerateBy;
+
+  constructor Rocket new(int pX, int pY) {
+    let scaleBy = 100;
+    let accelerateBy = scaleBy / 10;
+    let x = pX;
+    let y = pY * scaleBy;
+    let lastLocation = -1;
+    let width = 32;
+    let height = 16;
+    let acceleration = 0;
+    return this;
+  }
+
+  /**
+   * Increases acceleration upwards (up to a fixed cap).
+   */
+  method void accelerateUp() {
+    let acceleration = Math.max(acceleration - accelerateBy, -scaleBy * 4);
+    return;
+  }
+
+  /**
+   * Increases acceleration downwards (up to a fixed cap).
+   */
+  method void accelerateDown() {
+    let acceleration = Math.min(acceleration + accelerateBy, scaleBy * 4);
+    return;
+  }
+
+  /**
+   * Slows the rocket down, until it moves neither upwards nor downwards.
+   */
+  method void slowDown() {
+    if(acceleration > 0) {
+      let acceleration = Math.max(acceleration - (accelerateBy/2), 0);
+    }
+    if(acceleration < 0) {
+      let acceleration = Math.min(acceleration + (accelerateBy/2), 0);
+    }
+    return;
+  }
+
+  /**
+   * Update the rocket's position based on it's current acceleration.
+   */
+  method void update() {
+    let y = Util.capInt(y + acceleration, 0, scaleBy * (Constants.SCREEN_HEIGHT() - height));
+    return;
+  }
+
+  method void draw() {
+    var int memAddress, location;
+
+    //do Screen.setColor(color);
+    //do Screen.drawRectangle(x, y/scaleBy, x + width, y/scaleBy + height);
+
+    let location = (y/scaleBy*32) + (x/16);
+    if(~(lastLocation = location)) {
+      do erase();
+    }
+
+    let memAddress = 16384+location;
+    do Memory.poke(memAddress+0, -8);
+  	do Memory.poke(memAddress+32, 904);
+  	do Memory.poke(memAddress+64, 910);
+  	do Memory.poke(memAddress+96, 911);
+  	do Memory.poke(memAddress+128, 910);
+  	do Memory.poke(memAddress+160, 904);
+  	do Memory.poke(memAddress+192, 910);
+  	do Memory.poke(memAddress+224, 911);
+  	do Memory.poke(memAddress+256, 911);
+  	do Memory.poke(memAddress+288, 910);
+  	do Memory.poke(memAddress+320, 904);
+  	do Memory.poke(memAddress+352, 910);
+  	do Memory.poke(memAddress+384, 911);
+  	do Memory.poke(memAddress+416, 910);
+  	do Memory.poke(memAddress+448, 904);
+  	do Memory.poke(memAddress+480, -8);
+
+    let memAddress = 16384+location+1;
+    do Memory.poke(memAddress+0, 1023);
+    do Memory.poke(memAddress+32, 3136);
+    do Memory.poke(memAddress+64, 4160);
+    do Memory.poke(memAddress+96, 8256);
+    do Memory.poke(memAddress+128, 16448);
+    do Memory.poke(memAddress+160, 16448);
+    do Memory.poke(memAddress+192, -32704);
+    do Memory.poke(memAddress+224, -32704);
+    do Memory.poke(memAddress+256, -32704);
+    do Memory.poke(memAddress+288, -32704);
+    do Memory.poke(memAddress+320, 16448);
+    do Memory.poke(memAddress+352, 16448);
+    do Memory.poke(memAddress+384, 8256);
+    do Memory.poke(memAddress+416, 4160);
+    do Memory.poke(memAddress+448, 3136);
+    do Memory.poke(memAddress+480, 1023);
+
+    let lastLocation = location;
+    return;
+  }
+
+  method void erase() {
+    var int memAddress;
+    let memAddress = 16384+lastLocation;
+    do Memory.poke(memAddress+0, 0);
+  	do Memory.poke(memAddress+32, 0);
+  	do Memory.poke(memAddress+64, 0);
+  	do Memory.poke(memAddress+96, 0);
+  	do Memory.poke(memAddress+128, 0);
+  	do Memory.poke(memAddress+160, 0);
+  	do Memory.poke(memAddress+192, 0);
+  	do Memory.poke(memAddress+224, 0);
+  	do Memory.poke(memAddress+256, 0);
+  	do Memory.poke(memAddress+288, 0);
+  	do Memory.poke(memAddress+320, 0);
+  	do Memory.poke(memAddress+352, 0);
+  	do Memory.poke(memAddress+384, 0);
+  	do Memory.poke(memAddress+416, 0);
+  	do Memory.poke(memAddress+448, 0);
+  	do Memory.poke(memAddress+480, 0);
+
+    let memAddress = 16384+lastLocation+1;
+    do Memory.poke(memAddress+0, 0);
+    do Memory.poke(memAddress+32, 0);
+    do Memory.poke(memAddress+64, 0);
+    do Memory.poke(memAddress+96, 0);
+    do Memory.poke(memAddress+128, 0);
+    do Memory.poke(memAddress+160, 0);
+    do Memory.poke(memAddress+192, 0);
+    do Memory.poke(memAddress+224, 0);
+    do Memory.poke(memAddress+256, 0);
+    do Memory.poke(memAddress+288, 0);
+    do Memory.poke(memAddress+320, 0);
+    do Memory.poke(memAddress+352, 0);
+    do Memory.poke(memAddress+384, 0);
+    do Memory.poke(memAddress+416, 0);
+    do Memory.poke(memAddress+448, 0);
+    do Memory.poke(memAddress+480, 0);
+    return;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  /**
+   * Returns the rectangle around the rocket that can be used to check for
+   * intersection with the asteroids.
+   */
+  method Rect getBoundingRect() {
+    return Rect.new(x, y/scaleBy, width, height);
+  }
+}

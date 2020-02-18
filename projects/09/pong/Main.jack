@@ -1,0 +1,13 @@
+
+
+class Main{
+        
+        function void main() {
+            var Game a_game;
+            let a_game = Game.new();
+            do a_game.run();
+            do a_game.dispose();
+            return;
+                
+            } 
+        }

@@ -1,0 +1,133 @@
+function Rect.new 0
+push constant 4
+call Memory.alloc 1
+pop pointer 0
+push pointer 0
+push argument 0
+push argument 1
+push argument 2
+push argument 3
+call Rect.set 5
+pop temp 0
+push pointer 0
+return
+function Rect.getLeft 0
+push argument 0
+pop pointer 0
+push this 0
+return
+function Rect.getTop 0
+push argument 0
+pop pointer 0
+push this 1
+return
+function Rect.getRight 0
+push argument 0
+pop pointer 0
+push this 2
+return
+function Rect.getBottom 0
+push argument 0
+pop pointer 0
+push this 3
+return
+function Rect.getWidth 0
+push argument 0
+pop pointer 0
+push this 2
+push this 0
+sub
+return
+function Rect.getHeight 0
+push argument 0
+pop pointer 0
+push this 3
+push this 1
+sub
+return
+function Rect.set 0
+push argument 0
+pop pointer 0
+push argument 1
+pop this 0
+push argument 2
+pop this 1
+push argument 1
+push argument 3
+add
+pop this 2
+push argument 2
+push argument 4
+add
+pop this 3
+push constant 0
+return
+function Rect.getCenterX 0
+push argument 0
+pop pointer 0
+push this 0
+push pointer 0
+call Rect.getWidth 1
+push constant 2
+call Math.divide 2
+add
+return
+function Rect.getCenterY 0
+push argument 0
+pop pointer 0
+push this 1
+push pointer 0
+call Rect.getHeight 1
+push constant 2
+call Math.divide 2
+add
+return
+function Rect.intersects 4
+push argument 0
+pop pointer 0
+push pointer 0
+call Rect.getCenterX 1
+push argument 1
+call Rect.getCenterX 1
+sub
+call RNG.absolute 1
+pop local 2
+push local 2
+push pointer 0
+call Rect.getWidth 1
+push argument 1
+call Rect.getWidth 1
+add
+push constant 2
+call Math.divide 2
+lt
+pop local 0
+push pointer 0
+call Rect.getCenterY 1
+push argument 1
+call Rect.getCenterY 1
+sub
+call RNG.absolute 1
+pop local 3
+push local 3
+push pointer 0
+call Rect.getHeight 1
+push argument 1
+call Rect.getHeight 1
+add
+push constant 2
+call Math.divide 2
+lt
+pop local 1
+push local 0
+push local 1
+and
+return
+function Rect.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return

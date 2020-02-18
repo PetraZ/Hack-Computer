@@ -1,0 +1,226 @@
+// --------------------------------------------------------------------
+// Application: One-dimensional Cellular Automaton Viewer 
+// File name: CAUI.jack
+// --------------------------------------------------------------------
+// CAUI class for the cellular automaton viewer program, created with 
+// the Jack programming language by Helmut Bittermann for the Nand to
+// Tetris course on Coursera (2017/08).
+// --------------------------------------------------------------------
+
+/** The CAUI (Cellular Automaton User Interface) class uses the CA 
+   (Cellular Automaton) class and provides a user interface for 
+   that class. The user interface has two modes:
+   (1) An amimation mode, where the evolutions of all rules are diplayed
+       automatically one after each other.  
+   (2) A halt mode, where a rule number can be entered and the
+       corresponding evolution is displayed. 
+*/ 	
+class CAUI {
+
+	field CA ca;                // Cellular automaton object variable
+	field int cellNumber;       // Number of cells of the automaton
+	field int ruleNumber;       // Rule number (for initialization)
+	field int col;              // Column number for some text outputs
+	field boolean randomStates; // For toggling the start conditions
+	
+	constructor CAUI new() {
+	    
+		// Create initially a cellular automaton with 64 cells and 
+		// the rule number 0:
+		let cellNumber = 64;
+		let ruleNumber = 0;
+		let ca = CA.new(cellNumber, ruleNumber);
+		let randomStates = false;
+		return this;
+	}
+	
+	method void dispose() {
+		
+		do ca.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+	
+	// Prints the header of the UI screen (titel and actual rule number)
+	method void printHeader() {		
+		
+		var string text;
+		
+		let text = "ONE-DIMENSIONAL CELLULAR AUTOMATON VIEWER";
+		let col = String.length(text);
+		let col = (64 - col) / 2;
+		do Output.moveCursor(0, col);
+		do Output.printString(text);
+		do Output.println();
+		let text = "Rule number: XX";
+		let col = String.length(text);
+		let col = (64 - col) / 2;
+		do Output.moveCursor(1, col);
+		do Output.printString("Rule number: ");
+		do Output.printInt(ca.getRuleNumber());		
+		return;
+	}
+	
+	// Prints the footer for the animation mode
+	method void printFooter1() {
+	
+		do Output.moveCursor(22, 0);
+		if (randomStates) {
+			do Output.printString("<H>alt animation |  Starts with random states  |  <Q>uit program"); 
+		}
+		else {
+			do Output.printString("<H>alt animation | Starts with one living cell |  <Q>uit program");
+		}	 
+		return;
+	}
+	
+	// Prints the footer for the halt mode
+	method void printFooter2() {
+	
+		do Output.moveCursor(22, 0);
+		do Output.printString("<C>ontinue animation |  <S>et rule  |  <T>oggle start conditions"); 
+		return;
+	}
+	
+	// Prints the evolution of a transistion rule and
+	// waits a little, so that the result can be better
+	// viewed.
+	method int printRules(boolean incRuleNumber) {
+	
+		var int key, returnKey, i;
+		
+	    if (randomStates) {
+			do ca.setRandomStates();
+		} 
+        else {
+			do ca.resetCells();
+			do ca.setCellState(cellNumber / 2, true);
+		}			
+		do ca.setRuleNumber(ruleNumber);
+		do Screen.setColor(false);
+		do Screen.drawRectangle(0, 10, 511, 239);
+		do Output.moveCursor(1, col);
+		do Output.printString("Rule number: ");
+		do Output.printInt(ca.getRuleNumber());
+		let returnKey = 0;
+		let returnKey = ca.drawEvolution(0, 32, 8, 25);
+		if (incRuleNumber) {
+			let ruleNumber = ruleNumber + 1;
+			if (ruleNumber > 255) { let ruleNumber = 0; }
+		}
+
+		// Check if a key is pressed while waiting
+		let i = 0;
+		let key = 0;
+		while ((key = 0) & (i < 100)) {
+			let key = Keyboard.keyPressed();
+			if (~(key = 0)) { let returnKey = key; }
+			do Sys.wait(30);
+			let i = i + 1;
+		}
+		return returnKey;				
+	}
+	
+	// Prints a goodbye message, when "Q" is pressed
+	method void printGoodbyeMessage() {
+	
+		var string text;
+	
+		do Screen.clearScreen();
+		let text = "Goodbye, have a nice day!";
+		let col = String.length(text);
+		let col = (64 - col) / 2;
+		do Output.moveCursor(12, col);
+		do Output.printString(text);
+		return;
+	}
+	
+	// Prompts the user for a rule number input
+	method void readRuleNumber() {
+		
+		var int input;
+		
+		do Sys.wait(500);
+		do Output.moveCursor(1, col);
+		let input = Keyboard.readInt("Enter rule number: ");
+		if ((input > - 1) & (input < 256)) {
+			let ruleNumber = input;
+		}
+		do printRules(false);
+		return;
+	}
+	
+	// Toggles the start conditions, between
+    // - Only one cell alive in the middle of the automaton
+	// - Random states of all cells
+	method void toggleStartStates() {
+	
+		let randomStates = ~randomStates;
+		do printRules(false);
+		return;
+	}
+	
+	// Presents the halt mode
+	method void haltMode() {
+	
+		var int key;
+		
+		do printFooter2();
+		do Sys.wait(500);
+		
+		let key = 0;
+		while (true) {
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+			}		
+			if (key = 83) { do readRuleNumber(); }    // S key
+			if (key = 84) { do toggleStartStates(); } // T key
+			if (key = 67) {                           // C key
+				let ruleNumber = ruleNumber + 1;      
+				if (ruleNumber > 255) { let ruleNumber = 0; }
+				return; 
+			}                  
+			let key = 0;
+		}
+		return;
+	}
+	
+	// The run method of the CAUI object.
+	method void run() {
+
+		var int i;
+		var boolean exit;
+		var int key;
+		var int seed;
+		
+		let exit = false;	
+		do printHeader();
+		do printFooter1();
+		let key = 0;
+		let seed = 1011;
+		while (~exit)
+		{
+			while (key = 0) {
+				let key = Keyboard.keyPressed();
+				let key = printRules(true);
+				if (seed < 32767) {
+					let seed = seed+1;
+				} else {
+					let seed =0;
+				}
+			}
+			do LCGRandom.setSeed(seed);
+			if (key = 81)  {      // Q key
+				let exit = true; 
+			}   
+			if (key = 72)  {      // H key
+				do haltMode(); 
+				do printFooter1();
+			}      
+			let key = 0;
+			
+		}	
+		do printGoodbyeMessage();
+		return;
+	}
+}

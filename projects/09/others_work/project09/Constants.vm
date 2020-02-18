@@ -1,0 +1,24 @@
+function Constants.SCREEN_WIDTH 0
+push constant 511
+return
+function Constants.SCREEN_HEIGHT 0
+push constant 255
+return
+function Constants.OUTPUT_COLUMNS 0
+push constant 64
+return
+function Constants.OUTPUT_ROWS 0
+push constant 22
+return
+function Constants.MIN_ASTEROID_SIZE 0
+push constant 15
+return
+function Constants.MAX_ASTEROID_SIZE 0
+push constant 50
+return
+function Constants.MIN_ASTEROID_DISTANCE 0
+push constant 70
+return
+function Constants.MAX_ASTEROID_DISTANCE 0
+push constant 200
+return

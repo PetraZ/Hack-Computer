@@ -1,0 +1,35 @@
+function Main.main 4
+push constant 23456
+call RNG.new 1
+pop local 0
+call Constants.MAX_ASTEROID_SIZE 0
+call Constants.SCREEN_HEIGHT 0
+push constant 2
+call Math.divide 2
+push constant 10
+sub
+call Rocket.new 2
+pop local 1
+push constant 5
+push local 0
+call AsteroidField.new 2
+pop local 2
+push local 1
+push local 2
+push local 0
+call Game.new 3
+pop local 3
+push local 3
+call Game.run 1
+pop temp 0
+push local 3
+call Game.dispose 1
+pop temp 0
+push local 1
+call Rocket.dispose 1
+pop temp 0
+push local 2
+call AsteroidField.dispose 1
+pop temp 0
+push constant 0
+return

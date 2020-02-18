@@ -1,0 +1,80 @@
+class Rect {
+  field int left;
+  field int top;
+  field int right;
+  field int bottom;
+
+  constructor Rect new(int x, int y, int width, int height) {
+    do set(x,y,width,height);
+    return this;
+  }
+
+  method int getLeft() {
+    return left;
+  }
+
+  method int getTop() {
+    return top;
+  }
+
+  method int getRight() {
+    return right;
+  }
+
+  method int getBottom() {
+    return bottom;
+  }
+
+  method int getWidth() {
+    return right - left;
+  }
+
+  method int getHeight() {
+    return bottom - top;
+  }
+
+  method void set(int x, int y, int width, int height) {
+    let left = x;
+    let top = y;
+    let right = x + width;
+    let bottom = y + height;
+    return;     
+  }
+
+  /**
+   * Returns the X coordinate of the rectangle's center point.
+   */
+  method int getCenterX() {
+    return left + (getWidth() / 2);
+  }
+
+  /**
+   * Returns the Y coordinate of the rectangle's center point.
+   */
+  method int getCenterY() {
+    return top + (getHeight() / 2);
+  }
+
+  /**
+   * Checks for intersection with another rectangle. Returns true on intersection
+   * and false otherwise.
+   */
+  method boolean intersects(Rect other) {
+    var boolean intersectsHorizontally;
+    var boolean intersectsVertically;
+    var int distanceX;
+    var int distanceY;
+
+    let distanceX = RNG.absolute(getCenterX() - other.getCenterX());
+    let intersectsHorizontally = distanceX < (getWidth() + other.getWidth() / 2);
+    let distanceY = RNG.absolute(getCenterY() - other.getCenterY());
+    let intersectsVertically = distanceY < (getHeight() + other.getHeight() / 2);
+
+    return intersectsHorizontally & intersectsVertically;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}

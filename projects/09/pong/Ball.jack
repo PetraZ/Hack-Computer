@@ -1,0 +1,87 @@
+
+
+class Ball {
+field int radius, x,y,speed_x,speed_y;
+    constructor Ball new(){                             // creat a new ball object
+                       let radius = 10;
+                       let x = 11;
+                       let y = 11;
+                       let speed_x = 1;
+                       let speed_y = 1;
+                       do draw();
+                       return this;}
+    
+    method void reset() {                              // reset ball object to original parameters
+                let radius = 10;
+                let x = 11;
+                let y = 11;
+                let speed_x = 1;
+                let speed_y = 1;
+                return;
+                }     
+   
+    method void dispose(){                            // dispose memory occupied by this object 
+                do Memory.deAlloc(this);
+                return;}    
+    
+    method void draw(){                              // draw the ball object on screen
+                  do Screen.setColor(true);
+                  do Screen.drawCircle(x,y,radius); 
+                  return;}
+    
+    method void erase(){                             // erase current ball object
+                  do Screen.setColor(false);
+                  do Screen.drawCircle(x,y,radius);
+                  return;}
+
+    method boolean collide_on_verticle() {           // return true of false whether the ball collides on the verticle boundary
+                   var boolean a;
+                   if (((x+radius) <511) & ((x-radius)>0)){
+                   let a = false;}
+                   else {let a = true;}
+                   return a; }
+                   
+                               
+    method boolean collide_on_up_hori(){            // return true or false of whether the ball collides with the up boundary
+                     var boolean a; 
+                     if ((y-radius)>0){
+                      let a = false;}
+                     else { let a = true;}
+                      return a; }
+                             
+    method boolean collide_on_bar(int bar_x,int bar_depth,int bar_length){           // return true or false of whether the ball collide with the bar
+                 var boolean a;
+                 if ((x>bar_x)&(x<(bar_x+bar_length))&((y+radius+bar_depth))>256){
+                  let a = true;}
+                 else{
+                  let a =false;}
+                  return a;}
+                 
+    method boolean fall_off(int bar_x,int bar_depth,int bar_length){                  // return true or false whether the ball falls off
+                       var boolean a;
+                       if (((y+radius+bar_depth)>256)&(~collide_on_bar(bar_x,bar_depth,bar_length)))
+                       {let a = true;}
+                       else {let a = false;}
+                       return a;
+                       }
+
+    method void run(int bar_x,int bar_depth,int bar_length){                          // advance one step of movement, update the ball position
+                  do erase();
+                  if (collide_on_verticle())
+                      {let speed_x = -speed_x;}
+                  if (collide_on_up_hori())
+                      {let speed_y = -speed_y;}
+                  if (collide_on_bar(bar_x,bar_depth,bar_length))
+                      {let speed_y = -speed_y;}
+                  if (fall_off(bar_x,bar_depth,bar_length))
+                      { do Output.printString("          You lost.Print s to start a new game!");
+                        do reset() ;}
+                  
+                  let x = x + speed_x;
+                  let y = y + speed_y;
+                  do draw();
+                  do Sys.wait(5);
+                  return;
+                   }
+
+}

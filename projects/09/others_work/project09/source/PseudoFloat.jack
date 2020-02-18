@@ -1,0 +1,44 @@
+/**
+ * A 'pseudo' floating point or fraction. It can be used to increase integers
+ * by less then one (and therefore more slowly than otherwise possible).
+ */
+class PseudoFloat {
+  field int denominator;
+  field int value;
+
+  /**
+   * The denominator determines by how much the value will be scaled down.
+   */
+  constructor PseudoFloat new(int pValue, int pDenominator) {
+    let value = pValue;
+    let denominator = pDenominator;
+    return this;
+  }
+
+  /**
+   * Returns an integer that's the current value divided by the denominator.
+   */
+  method int getValue() {
+    return value / denominator;
+  }
+
+  method void setValue(int pValue) {
+    let value = pValue;
+    return;
+  }
+
+  method void add(int pValue) {
+    let value = value + pValue;
+    return;
+  }
+
+  method void multiply(int pValue) {
+    let value = value * pValue;
+    return;
+  }
+
+  method void divide(int pValue) {
+    let value = value / pValue;
+    return;
+  }
+}

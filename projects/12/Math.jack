@@ -1,0 +1,99 @@
+class Math {
+	static Array masks;
+	function void init(){
+
+		let masks = Array.new(16);
+	    let masks[0]  = 1;
+	    let masks[1]  = 2;
+	    let masks[2]  = 4;
+	    let masks[3]  = 8;
+	    let masks[4]  = 16;
+	    let masks[5]  = 32;
+	    let masks[6]  = 64;
+	    let masks[7]  = 128;
+	    let masks[8]  = 256;
+	    let masks[9]  = 512;
+	    let masks[10] = 1024;
+	    let masks[11] = 2048;
+	    let masks[12] = 4096;
+	    let masks[13] = 8192;
+	    let masks[14] = 16384;
+	    let masks[15] = 16384 + 16384;
+
+	    return;
+	}
+
+	function int abs(int x){
+		var int value;
+		if (x>0) {let value = x; }
+		else {let value = -x;}
+		return value;
+	}
+
+	function int multiply(int x, int y){
+		var int sum;
+		var int shifted_x;
+		var int index;
+		var int bit_pick;
+		let index = 16;
+		let shifted_x = x;
+		let bit_pick = 1;
+		while (index>0){
+			if (bit_pick & y){
+				let sum = sum + shifted_x ;
+			}
+			let bit_pick = bit_pick + bit_pick;
+			let shifted_x = shifted_x + shifted_x;
+			let index = index - 1;
+		}
+		return sum;
+	}
+
+	function int divide(int x, int y){
+		var int q;
+		if (y = 0){
+			do Sys.error(1);
+		}
+		if(x < 0){
+			return -Math.divide(-x,y);
+		}
+		if(y<0){
+			return -Math.divide(x,-y);
+		}
+
+		// main part
+		if (y>x) {return 0;}
+		let q = Math.divide(x,y+y);
+		if ((x-(2*q*y))<y){return (q+q);}
+		else {return (q+q+1);}
+	}
+
+	function int min(int x, int y){
+		var int value;
+		if (x>y){let value = y;}
+		else {let value = x;}
+		return value;
+	}
+
+	function int max(int x, int y){
+		var int value;
+		if (x<y){let value = y;}
+		else {let value = x;}
+		return value;
+	}
+
+	function int sqrt(int x){
+		var int y,j;
+		if (x<0) {do Sys.error(1);}
+		let j = 7;
+		let y = 0;
+		while (~(j<0)){
+			if (~(((y+masks[j])*(y+masks[j]))>x) & ((y+masks[j])<182) ){
+				let y = y + masks[j];
+			}
+			let j = j-1;
+		} 
+		return y;
+	}
+
+}

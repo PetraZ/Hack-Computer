@@ -1,0 +1,58 @@
+
+
+class Bar{ 
+field int x,length,depth;           //x stands for column here
+    constructor Bar new () {             // create a bar object
+            let x = 0;
+            let length = 60;
+            let depth = 10;
+            do draw();
+            return this; }
+    
+    method void dispose(){               // dispose occupied memory
+            do Memory.deAlloc(this);
+            return;}
+    
+    method void draw()                   // draw the bar on the screen
+            {do Screen.setColor(true);
+            do Screen.drawRectangle(x,255-depth,x+length,255);
+            return; }
+            
+    method void erase()   {do Screen.setColor(false);                       // erase the bar on the screen              
+                          do Screen.drawRectangle(x,255-depth,x+length,255);
+                          return; }
+    
+    method void move_right(){ if ((x+length+2)<512) {                       // move the bar to the right one step
+                             do Screen.setColor(false);
+                             do Screen.drawRectangle(x,255-depth,x+1,255);
+                             let x = x + 2;
+                             do Screen.setColor(true);
+                             do Screen.drawRectangle(x+length-1,255-depth,x+length,255);
+                             }
+                             return;}
+    
+    
+    method void move_left(){if (x>1){                                      // move the bar to the left one step
+                            do Screen.setColor(false);
+                            do Screen.drawRectangle(x+length-1,255-depth,x+length,255);
+                            let x = x - 2;
+                            do Screen.setColor(true);
+                            do Screen.drawRectangle(x,255-depth,x+1,255);
+                             }
+                            return; }
+    
+    method void decrease_size(){if (length>20){                           // decrease the length of bar (not used in this game)
+                                  do erase();
+                                  let length = length - 10;
+                                  do draw();
+                                  }
+                                return;
+                                }
+    method int get_length(){                                             // three getters to return basic information of the bar
+            return length;}
+    method int get_x_position(){
+            return x;}
+    method int get_depth(){
+            return depth;}
+
+}

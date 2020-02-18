@@ -1,0 +1,29 @@
+/**
+ * Holds some important constants, that will be required in more than one class.
+ */
+class Constants {
+  function int SCREEN_WIDTH() {
+    return 511;
+  }
+  function int SCREEN_HEIGHT() {
+    return 255;
+  }
+  function int OUTPUT_COLUMNS() {
+    return 64;
+  }
+  function int OUTPUT_ROWS() {
+    return 22;
+  }
+  function int MIN_ASTEROID_SIZE() {
+    return 15;
+  }
+  function int MAX_ASTEROID_SIZE() {
+    return 50;
+  }
+  function int MIN_ASTEROID_DISTANCE() {
+    return 70;
+  }
+  function int MAX_ASTEROID_DISTANCE() {
+    return 200;
+  }
+}

@@ -1,0 +1,53 @@
+
+
+class Game{
+    field Ball a_ball;
+    field Bar a_bar;
+    constructor Game new()                            // create a new game
+        {
+         let a_ball = Ball.new();
+         let a_bar = Bar.new();
+         do Output.moveCursor(0,20);
+         do Output.printString("Print s to start a new game!");
+         return this;
+            }
+    method void run(){                                      // run function of a game
+        var int depth,x,length;
+        var boolean exit_flag,start_flag;
+        var char key;
+        let exit_flag = false;
+        
+        while(~exit_flag)
+        {
+                
+         let key = Keyboard.keyPressed();
+         if (key = 83){let start_flag = true;do Screen.clearScreen();do Output.moveCursor(0,0);}          // when s is pressed, start a new game
+         if (start_flag){
+           
+           let depth = a_bar.get_depth();
+           let x = a_bar.get_x_position();
+           let length = a_bar.get_length();
+           if (a_ball.fall_off(x,depth,length)) {let start_flag = false;}
+           do a_ball.run(x,depth,length);
+           do a_bar.draw();
+           if (key = 130) {do a_bar.move_left();}
+           if (key = 132) {do a_bar.move_right();}
+
+                        }   
+         if (key = 81){let exit_flag = true;                                              // when q is pressed, exit this game.
+                       
+            
+                                     }
+         }
+         return;
+         }
+    method void dispose(){                            // dispose all occupied memoty
+        do a_bar.dispose();
+        do a_ball.dispose();
+        do Memory.deAlloc(this);
+        return;
+               
+       } 
+     }
+        
+        

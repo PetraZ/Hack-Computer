@@ -1,0 +1,567 @@
+function Rocket.new 0
+push constant 8
+call Memory.alloc 1
+pop pointer 0
+push constant 100
+pop this 6
+push this 6
+push constant 10
+call Math.divide 2
+pop this 7
+push argument 0
+pop this 0
+push argument 1
+push this 6
+call Math.multiply 2
+pop this 1
+push constant 1
+neg
+pop this 2
+push constant 32
+pop this 3
+push constant 16
+pop this 4
+push constant 0
+pop this 5
+push pointer 0
+return
+function Rocket.accelerateUp 0
+push argument 0
+pop pointer 0
+push this 5
+push this 7
+sub
+push this 6
+neg
+push constant 4
+call Math.multiply 2
+call Math.max 2
+pop this 5
+push constant 0
+return
+function Rocket.accelerateDown 0
+push argument 0
+pop pointer 0
+push this 5
+push this 7
+add
+push this 6
+push constant 4
+call Math.multiply 2
+call Math.min 2
+pop this 5
+push constant 0
+return
+function Rocket.slowDown 0
+push argument 0
+pop pointer 0
+push this 5
+push constant 0
+gt
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push this 5
+push this 7
+push constant 2
+call Math.divide 2
+sub
+push constant 0
+call Math.max 2
+pop this 5
+label IF_FALSE0
+push this 5
+push constant 0
+lt
+if-goto IF_TRUE1
+goto IF_FALSE1
+label IF_TRUE1
+push this 5
+push this 7
+push constant 2
+call Math.divide 2
+add
+push constant 0
+call Math.min 2
+pop this 5
+label IF_FALSE1
+push constant 0
+return
+function Rocket.update 0
+push argument 0
+pop pointer 0
+push this 1
+push this 5
+add
+push constant 0
+push this 6
+call Constants.SCREEN_HEIGHT 0
+push this 4
+sub
+call Math.multiply 2
+call Util.capInt 3
+pop this 1
+push constant 0
+return
+function Rocket.draw 2
+push argument 0
+pop pointer 0
+push this 1
+push this 6
+call Math.divide 2
+push constant 32
+call Math.multiply 2
+push this 0
+push constant 16
+call Math.divide 2
+add
+pop local 1
+push this 2
+push local 1
+eq
+not
+if-goto IF_TRUE0
+goto IF_FALSE0
+label IF_TRUE0
+push pointer 0
+call Rocket.erase 1
+pop temp 0
+label IF_FALSE0
+push constant 16384
+push local 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 8
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 904
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 911
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 904
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 911
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 911
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 904
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 911
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 910
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 904
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 8
+neg
+call Memory.poke 2
+pop temp 0
+push constant 16384
+push local 1
+add
+push constant 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 1023
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 3136
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 4160
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 8256
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 16448
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 16448
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 32704
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 32704
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 32704
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 32704
+neg
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 16448
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 16448
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 8256
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 4160
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 3136
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 1023
+call Memory.poke 2
+pop temp 0
+push local 1
+pop this 2
+push constant 0
+return
+function Rocket.erase 1
+push argument 0
+pop pointer 0
+push constant 16384
+push this 2
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 16384
+push this 2
+add
+push constant 1
+add
+pop local 0
+push local 0
+push constant 0
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 32
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 64
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 96
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 128
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 160
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 192
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 224
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 256
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 288
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 320
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 352
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 384
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 416
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 448
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push local 0
+push constant 480
+add
+push constant 0
+call Memory.poke 2
+pop temp 0
+push constant 0
+return
+function Rocket.dispose 0
+push argument 0
+pop pointer 0
+push pointer 0
+call Memory.deAlloc 1
+pop temp 0
+push constant 0
+return
+function Rocket.getBoundingRect 0
+push argument 0
+pop pointer 0
+push this 0
+push this 1
+push this 6
+call Math.divide 2
+push this 3
+push this 4
+call Rect.new 4
+return

@@ -1,0 +1,207 @@
+/**
+ * The main game class. Is responsible for coordinating the entity updates, as well
+ * as rendering and switching between game states.
+ */
+class Game {
+  field boolean exit;
+  field int score;
+  field Rocket rocket;
+  field AsteroidField asteroids;
+  field RNG rng;
+  field String playerName;
+
+  constructor Game new(Rocket pRocket, AsteroidField pAsteroids, RNG pRng) {
+    let exit = false;
+    let score = 0;
+    let rocket = pRocket;
+    let asteroids = pAsteroids;
+    let rng = pRng;
+    return this;
+  }
+
+  method void run() {
+    var boolean newHighscore;
+    do Sys.wait(1000);
+    do menuState();
+    do rng.setSeed(rng.getSeed() * Util.hashString(playerName));
+    do playState();
+    do renderGameOver();
+    do Sys.wait(1000);
+    return;
+  }
+
+  /**
+   * Asks the player for his name, then renders the game's story.
+   */
+  method void menuState() {
+    do Sys.wait(1000);
+    let playerName = readPlayerName();
+    do renderStory();
+    return;
+  }
+
+  /**
+   * The actual game play.
+   */
+  method void playState() {
+    do Screen.clearScreen();
+    while(~exit) {
+      do input();
+      do update();
+      do render();
+      do Sys.wait(10);
+    }
+    return;
+  }
+
+  /**
+   * Handle player input.
+   */
+  method void input() {
+    var int key;
+    let key = Keyboard.keyPressed();
+
+    if(key = 131) {                     // UP ARROW: accelerate up
+      do rocket.accelerateUp();
+    } else {
+      if(key = 133) {                   // DOWN ARROW: accelerate down
+        do rocket.accelerateDown();
+      } else {                          // NO ARROW: slow down
+        do rocket.slowDown();
+      }
+    }
+
+    if(key = 81) {                      // Q for Quit
+      let exit = true;
+    }
+    return;
+  }
+
+  /**
+   * Update entities and check for collisions. End the game on collision.
+   */
+  method void update() {
+    var Rect boundingRect;
+
+    // update position of rocket and asteroids
+    do rocket.update();
+    do asteroids.increaseSpeed();
+    do asteroids.update(5);
+
+    // update the score
+    let score = asteroids.getAsteroidsPassed();
+
+    // check for crash with asteroids
+    let boundingRect = rocket.getBoundingRect();
+    if(asteroids.checkForCollision(boundingRect)) {
+      let exit = true;
+    }
+    // check for crash with the "invisible walls of the universe"
+    if((boundingRect.getTop() < 1) | (boundingRect.getBottom() > (Constants.SCREEN_HEIGHT() - 1))) {
+      let exit = true;
+    }
+
+    do boundingRect.dispose();
+    return;
+  }
+
+  /**
+   * Draw entities.
+   */
+  method void render() {
+    do asteroids.draw();
+    do rocket.draw();
+    do renderScore();
+    return;
+  }
+
+  method void renderScore() {
+    var String scoreString;
+    let scoreString = "Score: ";
+    do Output.moveCursor(1,1);
+    do Output.printString(scoreString);
+    do Output.printInt(score);
+
+    do Output.moveCursor(21,1);
+    do Output.printString(playerName);
+    do scoreString.dispose();
+    return;
+  }
+
+  method void renderGameOver() {
+    var String gameOverString;
+    var int row;
+    var int key;
+
+    do Screen.clearScreen();
+    let gameOverString = "You take a last glance at the stars, before your";
+    do Util.centerCursorHorizontally(gameOverString, 9);
+    do Util.typeString(gameOverString, 45);
+    let gameOverString = "ship explodes into thousand pieces! You will never";
+    do Util.centerCursorHorizontally(gameOverString, 10);
+    do Util.typeString(gameOverString, 45);
+    let gameOverString = "see home again, but at least the flickering has stopped!";
+    do Util.centerCursorHorizontally(gameOverString, 11);
+    do Util.typeString(gameOverString, 45);
+    do gameOverString.dispose();
+    return;
+  }
+
+  method String readPlayerName() {
+    var String greeting;
+    let greeting = "Welcome! Please enter your name, pilot: ";
+    do Screen.clearScreen();
+    do Output.moveCursor(11,8);
+    do Util.typeString(greeting, 25);
+    do greeting.dispose();
+    return Keyboard.readLine("");
+  }
+
+  method void renderStory() {
+    var String story;
+
+    do Screen.clearScreen();
+    let story = "Far away in a foreign galaxy you are trying to find the";
+    do Util.centerCursorHorizontally(story, 7);
+    do Util.typeString(story, 45);
+
+    let story = "way to the planet 'Tufa Tu Reech', which you call home.";
+    do Util.centerCursorHorizontally(story, 8);
+    do Util.typeString(story, 45);
+
+    let story = "Suddenly you find yourself trapped in the middle of an";
+    do Util.centerCursorHorizontally(story, 9);
+    do Util.typeString(story, 45);
+
+    let story = "asteroid field. You become nervous and start to see";
+    do Util.centerCursorHorizontally(story, 10);
+    do Util.typeString(story, 45);
+
+    let story = "everything flicker in front of your eyes. Avoid any";
+    do Util.centerCursorHorizontally(story, 11);
+    do Util.typeString(story, 45);
+
+    let story =  "crashes! Buckle up and prepare for the ride!";
+    do Util.centerCursorHorizontally(story, 12);
+    do Util.typeString(story, 45);
+
+    do Sys.wait(1500);
+
+    let story = "Oh, and under no circumstances, crash into the invisible";
+    do Util.centerCursorHorizontally(story, 14);
+    do Util.typeString(story, 45);
+
+    let story = "walls of the universe! Good luck!";
+    do Util.centerCursorHorizontally(story, 15);
+    do Util.typeString(story, 45);
+
+    do Sys.wait(1500);
+
+    return;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+}

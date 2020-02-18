@@ -1,0 +1,63 @@
+/**
+ * A pseudo random number generator (with the emphasis on 'pseudo'). It generates
+ * a fixed number of 16-bit integers, depending on the seed value. After that number
+ * of integers has been generated, the series repeats.
+ */
+class RNG {
+  field int seed;
+  field int a;
+  field int b;
+  field int m;
+
+  /**
+   * The seed value determines the series of integers that will be generated.
+   */
+  constructor RNG new(int pSeed) {
+    let seed = RNG.absolute(pSeed);
+    let a = 727;    // any number that satisfies: {1,..,m-1} and prime
+    let b = 3797;   // any number that satisfies: {1,..,m-1} and prime
+    let m = 16333;  // prime number thats ~half of the greatest representable positive integer
+    return this;
+  }
+
+  method void setSeed(int pSeed) {
+    let seed = pSeed;
+    return;
+  }
+
+  method int getSeed() {
+    return seed;
+  }
+
+  /**
+   * Generates a random positive integer.
+   */
+  method int random() {
+    let seed = RNG.absolute(RNG.modulo(a * seed + b, m));
+    return seed;
+  }
+
+  /**
+   * Generates a random integer between min and max.
+   */
+  method int randomFromInterval(int min, int max) {
+    return min + RNG.modulo(random(), max - min);
+  }
+
+  /**
+   * The modulo operator.
+   */
+  function int modulo(int c, int n) {
+    return c - (c / n * n);
+  }
+
+  /**
+   * Returns unsigned x.
+   */
+  function int absolute(int x) {
+    if(x < 0) {
+      return ~x + 1;
+    }
+    return x;
+  }
+}

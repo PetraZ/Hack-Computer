@@ -1,0 +1,98 @@
+/**
+ * Asteroid's are the 'enemy' class of the game.
+ * @type {[type]}
+ */
+class Asteroid {
+  field int x, y;
+  field int lastX;
+  field int radius;
+
+  constructor Asteroid new(int pX, int pY, int pRadius) {
+    let x = pX;
+    let y = pY;
+    let lastX = -1;
+    let radius = pRadius;
+    return this;
+  }
+
+  method void draw() {
+    if(~(lastX = x)) {
+      do erase();
+    }
+
+    do Screen.setColor(true);
+    do Screen.drawCircle(x, y, radius);
+    let lastX = x;
+    return;
+  }
+
+  method void erase() {
+    if(lastX < 0) {
+      return;
+    }
+    do Screen.setColor(false);
+    do Screen.drawRectangle(lastX-radius, y-radius, lastX+radius, y+radius);
+    let lastX = -1;
+    return;
+  }
+
+  /**
+   * Checks if the asteroid has moved out on the left side of the screen.
+   * Returns true if the asteroid is only partially not visible, to avoid drawing
+   * issues.
+   */
+  method boolean outOfLeftBounds() {
+    var boolean outOfBounds;
+    let outOfBounds = (x - radius) < 0;
+    return outOfBounds;
+  }
+
+  /**
+   * Checks if the asteroid has moved out on the right side of the screen.
+   * Returns true if the asteroid is only partially not visible, to avoid drawing
+   * issues.
+   */
+  method boolean outOfRightBounds() {
+    var boolean outOfBounds;
+    let outOfBounds = (x + radius) > Constants.SCREEN_WIDTH();
+    return outOfBounds;
+  }
+
+  method void move(int deltaX) {
+    let x = x + deltaX;
+    return;
+  }
+
+  method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method int getX() {
+    return x;
+  }
+
+  method void setX(int pX) {
+    let x = pX;
+    return;
+  }
+
+  method int getY() {
+    return y;
+  }
+
+  method void setY(int pY) {
+    let y = pY;
+    return;
+  }
+
+  method void setRadius(int pRadius) {
+    let radius = pRadius;
+    return;
+  }
+
+  /** Make this a little smaller to be a bit forgiving. */
+  method Rect getBoundingRect() {
+    return Rect.new(x - radius + 2, y - radius + 2, radius * 2 - 4, radius * 2 - 4);
+  }
+}

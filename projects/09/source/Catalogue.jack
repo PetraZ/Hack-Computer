@@ -1,0 +1,140 @@
+
+/**
+ * Catalogue of pre-designed patterns to add to a world.
+ */
+class Catalogue {
+
+  /** the index within the catalogue */
+  static int position;
+
+  /** advance one place through the catalogue, and replace any pattern within the world with the pattern from the catalogue. */
+  function void advanceCatalogue(World world) {
+    do world.clear();
+    
+    if (position = 0) {
+      do Catalogue.setGlider(world);
+    }
+    if (position = 1) {
+      do Catalogue.setGrenade(world);
+    }
+    if (position = 2) {
+      do Catalogue.setClusterbomb(world);
+    }
+    if (position = 3) {
+      do Catalogue.setGliderGun(world);
+    }
+    let position = position + 1;
+    if (position = 4) {
+      let position = 0;
+    }
+    
+    return;
+  }
+
+  function void setGlider(World world) {
+    do world.setCell(19, 19, true);
+    do world.setCell(20, 19, true);
+    do world.setCell(21, 19, true);
+    do world.setCell(19, 20, true);
+    do world.setCell(20, 21, true);
+    
+    return;
+  }
+  
+  function void setGrenade(World world) {
+    do world.setCell(21, 19, true);
+    do world.setCell(20, 20, true);
+    do world.setCell(19, 21, true);
+    do world.setCell(19, 22, true);
+    do world.setCell(20, 23, true);
+    do world.setCell(21, 22, true);
+    do world.setCell(21, 21, true);
+    
+    return;
+  }
+  
+  function void setClusterbomb(World world) {
+    do world.setCell(20, 16, true);
+    do world.setCell(20, 19, true);
+    do world.setCell(19, 17, true);
+    do world.setCell(19, 18, true);
+    do world.setCell(21, 18, true);
+    do world.setCell(21, 17, true);
+    do world.setCell(21, 15, true);
+    
+    do world.setCell(17, 22, true);
+    do world.setCell(16, 21, true);
+    do world.setCell(15, 21, true);
+    do world.setCell(14, 22, true);
+    do world.setCell(15, 23, true);
+    do world.setCell(16, 23, true);
+    do world.setCell(13, 21, true);
+    
+    do world.setCell(20, 25, true);
+    do world.setCell(20, 28, true);
+    do world.setCell(19, 26, true);
+    do world.setCell(19, 27, true);
+    do world.setCell(21, 27, true);
+    do world.setCell(21, 26, true);
+    do world.setCell(19, 29, true);
+    
+    do world.setCell(26, 22, true);
+    do world.setCell(25, 21, true);
+    do world.setCell(24, 21, true);
+    do world.setCell(23, 22, true);
+    do world.setCell(24, 23, true);
+    do world.setCell(25, 23, true);
+    do world.setCell(27, 23, true);
+    
+    return;
+    
+  }
+  
+  function void setGliderGun(World world) {
+    do world.setCell(2, 5, true);
+    do world.setCell(3, 5, true);
+    do world.setCell(2, 6, true);
+    do world.setCell(3, 6, true);
+    
+    do world.setCell(15, 3, true);
+    do world.setCell(14, 3, true);
+    do world.setCell(13, 4, true);
+    do world.setCell(12, 5, true);
+    do world.setCell(12, 6, true);
+    do world.setCell(12, 7, true);
+    do world.setCell(13, 8, true);
+    do world.setCell(14, 9, true);
+    do world.setCell(15, 9, true);
+    
+    do world.setCell(16, 6, true);
+    
+    do world.setCell(17, 4, true);
+    do world.setCell(18, 5, true);
+    do world.setCell(18, 6, true);
+    do world.setCell(19, 6, true);
+    do world.setCell(18, 7, true);
+    do world.setCell(17, 8, true);
+    
+    do world.setCell(22, 3, true);
+    do world.setCell(22, 4, true);
+    do world.setCell(22, 5, true);
+    do world.setCell(23, 3, true);
+    do world.setCell(23, 4, true);
+    do world.setCell(23, 5, true);
+    do world.setCell(24, 2, true);
+    do world.setCell(24, 6, true);
+    
+    do world.setCell(26, 1, true);
+    do world.setCell(26, 2, true);
+    
+    do world.setCell(26, 6, true);
+    do world.setCell(26, 7, true);
+    
+    do world.setCell(36, 3, true);
+    do world.setCell(36, 4, true);
+    do world.setCell(37, 3, true);
+    do world.setCell(37, 4, true);
+    
+    return;
+  }
+}
