@@ -16,10 +16,7 @@ CHIP DMux4Way {
     OUT a, b, c, d;
 
     PARTS:
-    // Put your code here:
-// Nand(a=sel[0],b=sel[1],out=SelBoth0);
-// And(a=SelBoth0,b=in,out=a);
-DMux(in=in,sel=sel[1],a=Inab,b=Incd);
-DMux(in=Inab,sel=sel[0],a=a,b=b);
-DMux(in=Incd,sel=sel[0],a=c,b=d);
+    DMux(in=in,sel=sel[1],a=Inab,b=Incd);
+    DMux(in=Inab,sel=sel[0],a=a,b=b);
+    DMux(in=Incd,sel=sel[0],a=c,b=d);
 }
