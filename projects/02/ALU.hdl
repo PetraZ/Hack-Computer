@@ -42,30 +42,60 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   //45 Put you code here:
-Not(in=zx,out=notzx);
-And16(a=x,b[0]=notzx,b[1]=notzx,b[2]=notzx,b[3]=notzx,b[4]=notzx,b[5]=notzx,b[6]=notzx,b[7]=notzx,b[8]=notzx,b[9]=notzx,b[10]=notzx,b[11]=notzx,b[12]=notzx,b[13]=notzx,b[14]=notzx,b[15]=notzx,out=x1);
-Not16(in=x1,out=notx1);
-Mux16(a=x1,b=notx1,sel=nx,out=x2);
+   //Put you code here:
+//    old Implementation
+// Not(in=zx,out=notzx);
+// And16(a=x,b[0]=notzx,b[1]=notzx,b[2]=notzx,b[3]=notzx,b[4]=notzx,b[5]=notzx,b[6]=notzx,b[7]=notzx,b[8]=notzx,b[9]=notzx,b[10]=notzx,b[11]=notzx,b[12]=notzx,b[13]=notzx,b[14]=notzx,b[15]=notzx,out=x1);
+// Not16(in=x1,out=notx1);
+// Mux16(a=x1,b=notx1,sel=nx,out=x2);
 
 
-Not(in=zy,out=zy1);
-And16(a=y,b[0]=zy1,b[1]=zy1,b[2]=zy1,b[3]=zy1,b[4]=zy1,b[5]=zy1,b[6]=zy1,b[7]=zy1,b[8]=zy1,b[9]=zy1,b[10]=zy1,b[11]=zy1,b[12]=zy1,b[13]=zy1,b[14]=zy1,b[15]=zy1,out=y1);
-Not16(in=y1,out=noty1);
-Mux16(a=y1,b=noty1,sel=ny,out=y2);
+// Not(in=zy,out=zy1);
+// And16(a=y,b[0]=zy1,b[1]=zy1,b[2]=zy1,b[3]=zy1,b[4]=zy1,b[5]=zy1,b[6]=zy1,b[7]=zy1,b[8]=zy1,b[9]=zy1,b[10]=zy1,b[11]=zy1,b[12]=zy1,b[13]=zy1,b[14]=zy1,b[15]=zy1,out=y1);
+// Not16(in=y1,out=noty1);
+// Mux16(a=y1,b=noty1,sel=ny,out=y2);
 
 
-Add16(a=x2,b=y2,out=addxy);
-And16(a=x2,b=y2,out=andxy);
-Mux16(a=andxy,b=addxy,sel=f,out=outxy);
+// Add16(a=x2,b=y2,out=addxy);
+// And16(a=x2,b=y2,out=andxy);
+// Mux16(a=andxy,b=addxy,sel=f,out=outxy);
 
-Not16(in=outxy,out=notoutxy);
-Mux16(a=outxy,b=notoutxy,sel=no,out[15]=outsign,out[0..7]=outtem1,out[8..15]=outtem2);
-Or8Way(in=outtem1,out=zr1);
-Or8Way(in=outtem2,out=zr2);
-Or(a=zr1,b=zr2,out=notzr);
-Not(in=notzr,out=zr);
-And(a=true,b=outsign,out=ng);
-And16(a=true,b[0..7]=outtem1,b[8..15]=outtem2,out=out);
+// Not16(in=outxy,out=notoutxy);
+// Mux16(a=outxy,b=notoutxy,sel=no,out[15]=outsign,out[0..7]=outtem1,out[8..15]=outtem2);
+// Or8Way(in=outtem1,out=zr1);
+// Or8Way(in=outtem2,out=zr2);
+// Or(a=zr1,b=zr2,out=notzr);
+// Not(in=notzr,out=zr);
+// And(a=true,b=outsign,out=ng);
+// And16(a=true,b[0..7]=outtem1,b[8..15]=outtem2,out=out);
 
+
+    // 2021 2 2
+
+    // select based on zx
+    Mux16(a=x,b=false,sel=zx,out=zxout);
+    // select based on nx
+    Not16(in=zxout,out=notx);
+    Mux16(a=zxout,b=notx,sel=nx,out=nxout);
+
+    // select based on zy
+    Mux16(a=y,b=false,sel=zy,out=zyout);
+    // select based on ny
+    Not16(in=zyout,out=noty);
+    Mux16(a=zyout,b=noty,sel=ny,out=nyout);
+
+    // operate based on f
+    Add16(a=nxout,b=nyout,out=addxy);
+    And16(a=nxout,b=nyout,out=andxy);
+    Mux16(a=andxy,b=addxy,sel=f,out=fout);
+
+    // negate out based on no
+    Not16(in=fout,out=nfout);
+    Mux16(a=fout,b=nfout,sel=no,out=out,out[15]=ng,out[0..7]=lbyte,out[8..15]=hbyte);
+
+    // calculate if it's zero
+    Or8Way(in=lbyte, out=lz);
+    Or8Way(in=hbyte, out=hz);
+    Or(a=lz,b=hz,out=notzr);
+    Not(in=notzr,out=zr);
 }
