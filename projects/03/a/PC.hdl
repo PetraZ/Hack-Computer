@@ -17,10 +17,24 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
-Register(in=inreg,load=true,out=outreg,out=out);
+// Register(in=inreg,load=true,out=outreg,out=out);
 
-Mux16(b=in,a=IncOrStay,sel=load,out=outloadin);
-Inc16(in=outreg,out=outinc);
-Mux16(a=outreg,b=outinc,sel=inc,out=IncOrStay);
-Mux16(a=outloadin,b=false,sel=reset,out=inreg);
+// Mux16(b=in,a=IncOrStay,sel=load,out=outloadin);
+// Inc16(in=outreg,out=outinc);
+// Mux16(a=outreg,b=outinc,sel=inc,out=IncOrStay);
+// Mux16(a=outloadin,b=false,sel=reset,out=inreg);
+
+
+    // cleaner implementation
+
+    // select if load
+    Mux16(a=lastcount,b=in,sel=load,out=loadout);
+    // select if reset
+    Mux16(a=loadout,b=false,sel=reset,out=resetout);
+    // to store value
+    Register(in=resetout,load=true,out=regout,out=out);
+    // perform increment
+    Inc16(in=regout,out=incout);
+    // select output based on inc flag
+    Mux16(a=regout,b=incout,sel=inc,out=lastcount);
 }
